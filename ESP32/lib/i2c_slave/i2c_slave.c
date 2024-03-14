@@ -42,7 +42,7 @@ void i2c_read_task() {
     } 
     
     // "Unpacking" data values (left)
-    for(int i = 6; i < 10; i++){
+    for(int i = 6; i < 9; i++){
         read_value_l |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
     } 
 
@@ -55,7 +55,7 @@ void i2c_read_task() {
             FLAG_TARGET = false;
         }
 
-        // printf("Read value: %d, %d\n", read_value_r, read_value_l);
+        printf("Read value: %d, %d\n", read_value_r, read_value_l);
 
         TARGET_VALUE_R = read_value_r;
         TARGET_VALUE_L = read_value_l;
@@ -95,9 +95,9 @@ void i2c_task_com() {
 
     while(1){
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_read_task();
+        // i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(ENCODER_READ_R, ENCODER_READ_L);
+        i2c_write_task(10, 3);
     }
 }
 
@@ -127,10 +127,10 @@ void task_motor_control() {
 esp_err_t create_tasks() {
 
     // Task 1 (core 0): read + write data
-    // xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 5, NULL, 0);
+    xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 5, NULL, 0);
 
     // Task 2 (core 1): control 
-    xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
+    // xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
 
     return ESP_OK;
 }

@@ -57,8 +57,7 @@ esp_err_t update_motor(motor_side_t motor, int u)
 {
     u > 0 ? _set_forward(motor) : _set_backward(motor);
     
-    u = u > 0 ? u : -u;  //Abs of action control u
-    // printf("Action control %d\n", u);
+    u = u > 0 ? u : -u;  // Abs of action control u
 
     ledc_set_duty(LEDC_MODE, MOTOR_CHANNEL(motor), u);
     ledc_update_duty(LEDC_MODE, MOTOR_CHANNEL(motor));

@@ -31,7 +31,7 @@
 
 // Definition of values used in read and write
 #define WRITE_LEN_VALUE 8
-#define READ_LEN_VALUE 10
+#define READ_LEN_VALUE 9
 #define TIMEOUT_MS 250 
 
 // Definition of values for packing and unpacking
