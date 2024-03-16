@@ -82,7 +82,7 @@ void i2c_write_task(int value_r, int value_l) {
     int size = i2c_slave_write_buffer(I2C_SLAVE_NUM, tx_data, WRITE_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
 
     if (size > 0) {
-        // printf("Write value: %d, %d\n", value_r, value_l);
+        printf("Write value: %d, %d\n", value_r, value_l);
     } else {
         ESP_LOGI(TAG, "Write failed!");
     }
@@ -95,9 +95,9 @@ void i2c_task_com() {
 
     while(1){
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        // i2c_read_task();
+        i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(10, 3);
+        i2c_write_task(0, 0);
     }
 }
 
@@ -116,10 +116,9 @@ void task_motor_control() {
 
         // Testing:
 
-        //update_motor(LEFT, 8192);
-        //update_motor(RIGHT, 8192);
-        printf("Lidos:\n");
-        vTaskDelay(2*FREQ_COMMUNICATION / portTICK_PERIOD_MS);
+        // update_motor(LEFT, 8192);
+        // update_motor(RIGHT, 8192);
+        // vTaskDelay(2*FREQ_COMMUNICATION / portTICK_PERIOD_MS);
     }
    
 }

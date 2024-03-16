@@ -1,0 +1,5 @@
+# encoder_data.msg
+int64 front_left_encoder_data
+int64 front_right_encoder_data
+int64 rear_left_encoder_data
+int64 rear_right_encoder_data

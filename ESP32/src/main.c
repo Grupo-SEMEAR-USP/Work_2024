@@ -1,32 +1,38 @@
 #include <stdio.h>
-#include "esp_log.h"
-#include "esp_system.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "utils.h"
+#include "i2c_slave.h"
 
-void restart_task(void *pvParameters) {
-    // Atraso de 3 segundos antes de reiniciar
-    vTaskDelay(pdMS_TO_TICKS(3000));
-    ESP_LOGI("Restart", "Reiniciando ESP32");
-    esp_restart();
-}
+void app_main(void)
+{
 
-void app_main(void) {
-    // Iniciar tarefa para reiniciar após atraso
-    xTaskCreate(&restart_task, "restart_task", 2048, NULL, 5, NULL);
+    // Para testar Encoders + Velocidade (Transformação)
 
-    // Seu código principal aqui
+    init_gpio();
+    init_pwm();
 
-    // Testes:
-    // - Leitura dos encoders (FUNCIONANDO)
-    // - PWM (FUNCIONANDO)
+    pcnt_unit_handle_t encoder_unit_left = init_encoder(ENC_LEFT);
+    pcnt_unit_handle_t encoder_unit_right = init_encoder(ENC_RIGHT);
 
-    // - I2C (TESTAR) 
-    //       --> Provavelmente vamos ter que mudar para transmitir 4 valores
-    //       --> Estudar como fazer a leitura do buffer (mesmo erro dando na leitura dos encoders, o que será?) --> Vou tentar resetar a ESP antes de começar
+    while(1){
 
-    // Refazer:
-    // - PID
-    
-    // create_tasks();
+        // Teste 1:
+        // update_motor(LEFT, 8192);
+        // update_motor(RIGHT, 8192);
+
+        // Teste 2:
+        // update_motor(LEFT, 8192);
+        // update_motor(RIGHT, 8192);
+
+        // Teste 3:
+        // update_motor(LEFT, 8192);
+        // update_motor(RIGHT, 8192);
+
+        // Teste 4:
+        // update_motor(LEFT, 8192);
+        // update_motor(RIGHT, 8192);
+
+        pulse_count(encoder_unit_right);
+        pulse_count(encoder_unit_left);
+    }
+
 }

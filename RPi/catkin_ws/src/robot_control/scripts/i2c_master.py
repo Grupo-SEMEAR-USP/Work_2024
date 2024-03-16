@@ -11,10 +11,12 @@ import threading
 # Autores: Matheus Paiva Angarola e William
 
 # Constantes
-ESP32_ADDRESS_LEFT = 0x08  # Endereço do dispositivo ESP32 esquerdo no barramento I2C
-ESP32_ADDRESS_RIGHT = 0x09  # Endereço do dispositivo ESP32 direito no barramento I2C
+ESP32_ADDRESS_FRONT = 0x08  # Endereço do dispositivo ESP32 esquerdo no barramento I2C
+ESP32_ADDRESS_REAR = 0x09  # Endereço do dispositivo ESP32 direito no barramento I2C
 I2C_BUS = 1  # Número do barramento I2C no Raspberry Pi
 REG_ADDRESS = 10  # Endereço de registro (offset) a ser usado pelo PID
+
+encoder_data_global = [0, 0, 0, 0]  # Variável global para armazenar os dados dos encoders
 
 # Classe para comunicação I2C
 class I2CCommunication:
@@ -23,10 +25,10 @@ class I2CCommunication:
 
         self.wheel_velocities = [0, 0]  # Inicializa as velocidades das duas rodas como zero
 
-        if device_address == ESP32_ADDRESS_LEFT:
+        if device_address == ESP32_ADDRESS_FRONT:
             self.wheel_indices = 0 # Indice front
-        elif device_address == ESP32_ADDRESS_RIGHT:
-            self.wheel_indice = 1  # Indice rear
+        elif device_address == ESP32_ADDRESS_REAR:
+            self.wheel_indices = 1  # Indice rear
 
         self.i2c = smbus.SMBus(I2C_BUS)  # Define o barramento que será usado na comunicação
         self.device_address = device_address  # Define o endereço da ESP32 ao qual queremos nos comunicar
@@ -37,7 +39,7 @@ class I2CCommunication:
 
         self.encoder_msg = encoder_data()
 
-        if self.wheel_indice == 0:
+        if device_address == ESP32_ADDRESS_FRONT:
             self.encoder_msg.front_left_encoder_data = 0
             self.encoder_msg.front_right_encoder_data = 0
         else:
@@ -50,16 +52,22 @@ class I2CCommunication:
     def read_data(self):
         try:
             data = self.i2c.read_i2c_block_data(self.device_address, REG_ADDRESS, 8)  # Faz a leitura da ESP32
-            value_right, value_left = struct.unpack('!ii', bytes(data[:3]), bytes(data[3:]))  # Desempacota as informações recebidas
-
-            rospy.loginfo(f'Valor lido: {value_left}, {value_right}')
-
-            if self.wheel_indice == 0:
-                self.encoder_msg.front_left_encoder_data = value_left
-                self.encoder_msg.front_right_encoder_data = value_right
+            value_right = struct.unpack('!i', bytes(data[:4]))
+            value_left = struct.unpack('!i', bytes(data[4:]))  # Desempacota as informações recebidas
+            
+            if self.wheel_indices == 0:
+                rospy.loginfo(f'Valor lido FRENTE: {value_left[0]}, {value_right[0]}')
+                encoder_data_global[0] = value_left[0]
+                encoder_data_global[1] = value_right[0]
             else:
-                self.encoder_msg.rear_left_encoder_data = value_left
-                self.encoder_msg.rear_right_encoder_data = value_right
+                rospy.loginfo(f'Valor lido ATRÁS: {value_left[0]}, {value_right[0]}')
+                encoder_data_global[2] = value_left[0]
+                encoder_data_global[3] = value_right[0]
+
+            self.encoder_msg.front_left_encoder_data = encoder_data_global[0]
+            self.encoder_msg.front_right_encoder_data = encoder_data_global[1]
+            self.encoder_msg.rear_left_encoder_data = encoder_data_global[2]
+            self.encoder_msg.rear_right_encoder_data = encoder_data_global[3]
 
             self.pub_encoder.publish(self.encoder_msg)
 
@@ -99,8 +107,8 @@ class I2CCommunication:
 if __name__ == "__main__":
     try:
         rospy.init_node('i2c_master', anonymous=True)
-        left_i2c_communication = I2CCommunication(ESP32_ADDRESS_LEFT)
         right_i2c_communication = I2CCommunication(ESP32_ADDRESS_RIGHT)
+        left_i2c_communication = I2CCommunication(ESP32_ADDRESS_LEFT)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

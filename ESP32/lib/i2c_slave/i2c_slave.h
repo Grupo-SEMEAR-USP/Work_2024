@@ -27,7 +27,7 @@
 #define I2C_SLAVE_SDA_IO 21 // ESP32 SDA Pin
 #define I2C_SLAVE_TX_BUF_LEN 256
 #define I2C_SLAVE_RX_BUF_LEN 256
-#define I2C_SLAVE_ADDRESS 0x08
+#define I2C_SLAVE_ADDRESS 0x09 // 0x08 (Front) e 0x09 (Rear)
 
 // Definition of values used in read and write
 #define WRITE_LEN_VALUE 8
