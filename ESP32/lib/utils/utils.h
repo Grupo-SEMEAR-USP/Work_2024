@@ -15,6 +15,10 @@ extern int TARGET_VALUE_R;
 extern float ENCODER_READ_L;
 extern float ENCODER_READ_R;
 
+// PWM values that will be send to motors
+extern float LEFT_PWM_VALUE;
+extern float RIGHT_PWM_VALUE;
+
 void motor_ctrl();
 
 #endif
