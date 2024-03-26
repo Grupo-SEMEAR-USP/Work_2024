@@ -33,14 +33,16 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
    while(!FLAG_TARGET){
 
     //Global variables
-     float ENCODER_READ_L = pulse_count(upcnt_unit_L) * TICKS_TO_VELOCITY;
-     float ENCODER_READ_R = pulse_count(upcnt_unit_R) * TICKS_TO_VELOCITY;
+     ENCODER_READ_L = pulse_count(upcnt_unit_L);
+     ENCODER_READ_R = pulse_count(upcnt_unit_R);
+     float RPM_L = ENCODER_READ_L * PID_TICKS_TO_RPM(PID_LEFT);
+     float RPM_R = ENCODER_READ_R * PID_TICKS_TO_RPM(PID_RIGHT);
 
-     ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", ENCODER_READ_L);
-     ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", ENCODER_READ_R);
+     ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RPM_L);
+     ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RPM_R);
 
-     float error_motor_LEFT = (target_LEFT - ENCODER_READ_L);
-     float error_motor_RIGHT = (target_RIGHT - ENCODER_READ_R);
+     float error_motor_LEFT = (target_LEFT - RPM_L);
+     float error_motor_RIGHT = (target_RIGHT - RPM_R);
     
      ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
      ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);

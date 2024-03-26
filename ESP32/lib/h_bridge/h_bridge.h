@@ -44,8 +44,8 @@ typedef enum{
 // PWM Config 
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
-#define LEDC_DUTY_RES           LEDC_TIMER_13_BIT   // Set duty resolution to 13 bits
-#define LEDC_FREQUENCY          (5000)              // Frequency of 4kHz
+#define LEDC_DUTY_RES           LEDC_TIMER_10_BIT   // Set duty resolution to 10 bits
+#define LEDC_FREQUENCY          (5000)              // Frequency of 5kHz
 
 #define LEDC_OUTPUT_LEFT        GPIO_NUM_13 // Enable PWM A
 #define LEDC_CHANNEL_LEFT       LEDC_CHANNEL_0
