@@ -48,9 +48,6 @@ void init_pwm()
     };
 
     ledc_channel_config(&ledc_right_channel);
-
-
-    //return ESP_OK;
 }
 
 esp_err_t update_motor(motor_side_t motor, int u)
