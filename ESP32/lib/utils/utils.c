@@ -13,15 +13,3 @@ float RIGHT_PWM_VALUE = 0;
 
 int PWM_RESOLUTION = 10;
 
-
-void motor_ctrl() {
-    
-}
-
-void reiniciar_esp() {
-
-    reset_i2c(I2C_SLAVE_NUM);
-
-    //esp_restart();
-
-}

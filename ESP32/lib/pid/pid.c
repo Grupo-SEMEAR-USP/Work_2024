@@ -47,7 +47,7 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
      ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
 
-     //Calculate a new PWM Value
+     // Calculate a new PWM Value
      pid_compute(pid_block_L, error_motor_LEFT, &controll_pid_LEFT);
      pid_compute(pid_block_R, error_motor_RIGHT, &controll_pid_RIGHT);
 

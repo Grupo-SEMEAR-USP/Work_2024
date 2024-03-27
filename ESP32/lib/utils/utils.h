@@ -2,7 +2,6 @@
 #define __UTILS__
 
 #include <stdbool.h>
-#include "i2c_slave.h"
 #include "esp_system.h"
 
 extern bool FLAG_TARGET;
@@ -24,9 +23,5 @@ extern int PWM_RESOLUTION;
 // Values for motor modeling
 #define K_LEFT 1;
 #define K_RIGHT 0.1475;
-
-void motor_ctrl();
-
-void reiniciar_esp();
 
 #endif

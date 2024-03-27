@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "utils.h"
+#include "i2c_slave.h"
+#include "pid.h"
 
 void app_main(void)
 {
