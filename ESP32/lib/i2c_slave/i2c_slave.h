@@ -17,6 +17,9 @@
 #include <stdint.h>
 #include "esp_log.h"
 #include "driver/i2c.h"
+#include "utils.h"
+#include "h_bridge.h"
+#include "encoder.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -115,5 +118,8 @@ void i2c_task_controle();
  *     - Other error codes in case of failure.
  */
 esp_err_t create_tasks();
+
+
+esp_err_t reset_i2c(i2c_port_t i2c_num);
 
 #endif

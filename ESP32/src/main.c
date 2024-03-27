@@ -1,38 +1,31 @@
 #include <stdio.h>
 #include "utils.h"
-#include "i2c_slave.h"
 
 void app_main(void)
 {
 
+    //reiniciar_esp();
+
     // Para testar Encoders + Velocidade (Transformação)
 
-    init_gpio();
-    init_pwm();
+    //init_gpio();
+    //init_pwm();
 
-    pcnt_unit_handle_t encoder_unit_left = init_encoder(ENC_LEFT);
+    float enc_tick_right = 0;
+    // float enc_tick_left = 0;
+
+    //pcnt_unit_handle_t encoder_unit_left = init_encoder(ENC_LEFT);
     pcnt_unit_handle_t encoder_unit_right = init_encoder(ENC_RIGHT);
 
     while(1){
 
-        // Teste 1:
-        // update_motor(LEFT, 8192);
-        // update_motor(RIGHT, 8192);
+        enc_tick_right  = pulse_count(encoder_unit_right);
 
-        // Teste 2:
-        // update_motor(LEFT, 8192);
-        // update_motor(RIGHT, 8192);
+        ESP_LOGI("Teste", "RPM: %.2f | Rad/s: ", enc_tick_right);
 
-        // Teste 3:
-        // update_motor(LEFT, 8192);
-        // update_motor(RIGHT, 8192);
+        // enc_tick_left  = pulse_count(encoder_unit_left) * K_LEFT;
 
-        // Teste 4:
-        // update_motor(LEFT, 8192);
-        // update_motor(RIGHT, 8192);
-
-        pulse_count(encoder_unit_right);
-        pulse_count(encoder_unit_left);
+        // ESP_LOGI("Teste", "Pulse count: %f", enc_tick_left);
     }
 
 }

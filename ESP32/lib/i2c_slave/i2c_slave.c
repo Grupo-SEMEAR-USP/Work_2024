@@ -92,12 +92,13 @@ void i2c_write_task(int value_r, int value_l) {
 void i2c_task_com() {
     ESP_ERROR_CHECK(i2c_slave_init());
     i2c_write_queue = xQueueCreate(10, I2C_SLAVE_TX_BUF_LEN);
-
+    int teste = 0;
     while(1){
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
+        teste = teste + 1;
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(0, 0);
+        i2c_write_task(teste, 0);
     }
 }
 
@@ -132,5 +133,15 @@ esp_err_t create_tasks() {
     // xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
 
     return ESP_OK;
+}
+
+esp_err_t reset_i2c(i2c_port_t i2c_num){
+    // Desabilita o driver I2C
+    esp_err_t ret = i2c_driver_delete(i2c_num);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+
+    return ret;
 }
 
