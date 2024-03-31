@@ -9,12 +9,14 @@ project(robot_control)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
+  rospy
   roscpp
   std_msgs
   hardware_interface
+  controller_manager
   message_generation
-  rospy
-  sensor_msgs
+  tf
+  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -133,6 +135,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${robot_control_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -150,6 +153,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robot_control_node.cpp)
 
+add_executable(hw_interface src/hw_interface.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -164,6 +169,10 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+target_link_libraries(hw_interface
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

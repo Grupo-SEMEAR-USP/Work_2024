@@ -1,0 +1,7 @@
+<launch>
+  <!-- Carregar parâmetros do arquivo config.yaml -->
+  <rosparam file="$(find robot_control)/config/wheel_control.yaml" command="load" />
+
+  <!-- Iniciar o nó hw_interface -->
+  <node name="hw_interface" pkg="robot_control" type="hw_interface" output="screen" />
+</launch>

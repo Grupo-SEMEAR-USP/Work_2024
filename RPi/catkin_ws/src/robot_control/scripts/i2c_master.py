@@ -87,6 +87,9 @@ class I2CCommunication:
             return None
 
     def joints_callback(self, msg):
+
+        print(msg)
+
         if msg is not None:
             if self.wheel_indices == 0:
                 self.wheel_velocities[0] = int(msg.front_left_wheel * 100)
@@ -99,6 +102,7 @@ class I2CCommunication:
         rate = rospy.Rate(10)  # 10Hz
 
         while not rospy.is_shutdown():
+
             self.read_data()
             self.write_data()
 
@@ -107,8 +111,8 @@ class I2CCommunication:
 if __name__ == "__main__":
     try:
         rospy.init_node('i2c_master', anonymous=True)
-        right_i2c_communication = I2CCommunication(ESP32_ADDRESS_RIGHT)
-        left_i2c_communication = I2CCommunication(ESP32_ADDRESS_LEFT)
+        right_i2c_communication = I2CCommunication(ESP32_ADDRESS_FRONT)
+        left_i2c_communication = I2CCommunication(ESP32_ADDRESS_REAR)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

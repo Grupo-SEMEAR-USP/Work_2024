@@ -1,0 +1,5 @@
+wheel_control:
+  base_width: 0.35
+  wheel_radius: 0.03
+  deceleration_rate: 1.2
+  max_speed: 15.0

@@ -21,7 +21,7 @@ extern float RIGHT_PWM_VALUE;
 extern int PWM_RESOLUTION;
 
 // Values for motor modeling
-#define K_LEFT 1;
+#define K_LEFT 0.15;
 #define K_RIGHT 0.1475;
 
 #endif
