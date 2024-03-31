@@ -19,7 +19,7 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     nh.getParam("wheel_control/min_speed", min_speed);
 
     base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
-    base_geometry = 0.35;
+    //base_geometry = 0.35;
 }
 
 void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
