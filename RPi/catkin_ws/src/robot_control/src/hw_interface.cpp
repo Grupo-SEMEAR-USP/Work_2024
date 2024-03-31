@@ -1,4 +1,4 @@
-#include "robot_control/hw_interface.hpp"
+#include "hw_interface.hpp"
 
 RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeout_(nh.createTimer(ros::Duration(0.1), &RobotHWInterface::commandTimeoutCallback, this, true, false)) {
     // Subscreve ao tópico de comandos de movimento
@@ -9,9 +9,12 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
 
     // Carregar parâmetros do arquivo .yaml
     nh.getParam("wheel_control/wheel_radius", wheel_radius);
-    nh.getParam("wheel_control/base_width", base_width);
+    nh.getParam("wheel_control/wheel_separation_width", wheel_separation_width);
+    nh.getParam("wheel_control/wheel_separation_lenght", wheel_separation_lenght);
     nh.getParam("wheel_control/deceleration_rate", deceleration_rate);
     nh.getParam("wheel_control/max_speed", max_speed);
+
+    base_width = (wheel_separation_width + wheel_separation_lenght) / 2;
 }
 
 void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {

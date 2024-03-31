@@ -30,6 +30,8 @@ private:
     // Parâmetros carregados do arquivo .yaml
     float wheel_radius; // Raio das rodas
     float base_width; // Largura da base do robô
+    float wheel_separation_width;
+    float wheel_separation_lenght;
     float deceleration_rate; // Taxa de desaceleração
     float max_speed; // Velocidade máxima
 };
