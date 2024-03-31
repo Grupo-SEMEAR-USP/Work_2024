@@ -4,7 +4,16 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include "robot_control/velocity_data.h"
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/Point.h>
+#include "robot_control/encoder_data.h" 
+#include <tf/transform_broadcaster.h>
+#include <tf/tf.h>
 #include <cmath>
+
+#define HW_IF_UPDATE_FREQ 10
+#define HW_IF_TICK_PERIOD 1 / HW_IF_UPDATE_FREQ
 
 class RobotHWInterface {
 public:
@@ -14,12 +23,29 @@ public:
     void commandTimeoutCallback(const ros::TimerEvent&); // Callback para o timeout
     void updateWheelSpeedForDeceleration(); // Desaceleração
     float mapSpeed(float v_input); // Normalização da velocidade
+    void encoderCallback(const robot_control::encoder_data::ConstPtr& msg); // Callback para os dados do encoder
 
 private:
     ros::NodeHandle nh;
+
+    // Hw Interface 
     ros::Publisher velocity_command_pub;
     ros::Subscriber cmd_vel_sub;
-    ros::Timer command_timeout_; // Temporizador para o timeout de comandos
+
+    // Odometria
+    ros::Subscriber encoder_sub;
+    ros::Publisher odom_pub;
+
+    // Última orientação do robô (quaternion)
+    geometry_msgs::Quaternion last_orientation;
+
+    // Posição atual do robô
+    geometry_msgs::Point current_position;
+
+    tf::TransformBroadcaster odom_broadcaster;
+
+    // Temporizador para o timeout de comandos
+    ros::Timer command_timeout_; 
 
     // Variáveis membro para armazenar as velocidades das rodas
     float front_left_wheel_speed = 0.0;
@@ -29,7 +55,7 @@ private:
 
     // Parâmetros carregados do arquivo .yaml
     float wheel_radius; // Raio das rodas
-    float base_width; // Largura da base do robô
+    float base_geometry; // Geometria da base
     float wheel_separation_width;
     float wheel_separation_lenght;
     float deceleration_rate; // Taxa de desaceleração

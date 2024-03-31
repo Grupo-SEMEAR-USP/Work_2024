@@ -7,6 +7,9 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     // Publicador para o comando de velocidade das rodas
     velocity_command_pub = nh.advertise<robot_control::velocity_data>("velocity_command", 10);
 
+    encoder_sub = nh.subscribe("/encoder_data", 10, &RobotHWInterface::encoderCallback, this);
+    odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 50);
+
     // Carregar parâmetros do arquivo .yaml
     nh.getParam("wheel_control/wheel_radius", wheel_radius);
     nh.getParam("wheel_control/wheel_separation_width", wheel_separation_width);
@@ -15,7 +18,8 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     nh.getParam("wheel_control/max_speed", max_speed);
     nh.getParam("wheel_control/min_speed", min_speed);
 
-    base_width = (wheel_separation_width + wheel_separation_lenght) / 2;
+    base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
+    base_geometry = 0.35;
 }
 
 void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
@@ -23,10 +27,10 @@ void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg)
     float vy = msg->linear.y;
     float omega = msg->angular.z;
 
-    front_left_wheel_speed = mapSpeed((vx - vy - (omega * base_width)) * (1 / wheel_radius));
-    front_right_wheel_speed = mapSpeed((vx + vy + (omega * base_width)) * (1 / wheel_radius));
-    rear_left_wheel_speed = mapSpeed((vx + vy - (omega * base_width)) * (1 / wheel_radius));
-    rear_right_wheel_speed = mapSpeed((vx - vy + (omega * base_width)) * (1 / wheel_radius));
+    front_left_wheel_speed = mapSpeed((vx - vy - (omega * base_geometry)) * (1 / wheel_radius));
+    front_right_wheel_speed = mapSpeed((vx + vy + (omega * base_geometry)) * (1 / wheel_radius));
+    rear_left_wheel_speed = mapSpeed((vx + vy - (omega * base_geometry)) * (1 / wheel_radius));
+    rear_right_wheel_speed = mapSpeed((vx - vy + (omega * base_geometry)) * (1 / wheel_radius));
 
     // Reinicia o temporizador cada vez que um comando é recebido
     command_timeout_.stop();
@@ -75,13 +79,24 @@ void RobotHWInterface::updateWheelSpeedForDeceleration() {
     }
 }
 
+void RobotHWInterface::encoderCallback(const robot_control::encoder_data::ConstPtr& msg) {
+    double vel_linearx = (msg->front_right_encoder_data + msg->front_left_encoder_data + msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
+    double vel_lineary = (msg->front_right_encoder_data - msg->front_left_encoder_data - msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
+    double vel_angular_z = (msg->front_right_encoder_data - msg->front_left_encoder_data + msg->rear_right_encoder_data - msg->rear_left_encoder_data) * (wheel_radius / (4.0 * base_geometry));
+
+    std::cout << "Velocidade Linear X: " << vel_linearx << ", Velocidade Linear Y: " << vel_lineary << ", Velocidade Angular Z: " << vel_angular_z << std::endl;
+
+    // aplicar lógica para mandar para a odometria
+
+}
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "hw_interface");
     ros::NodeHandle nh; // Cria um NodeHandle
 
     RobotHWInterface controller(nh); // Passa o NodeHandle como argumento
 
-    ros::Rate rate(10);
+    ros::Rate rate(HW_IF_UPDATE_FREQ);
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
