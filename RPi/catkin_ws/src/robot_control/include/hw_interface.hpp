@@ -10,10 +10,10 @@ class RobotHWInterface {
 public:
     RobotHWInterface(ros::NodeHandle& nh); // Ajustado para receber NodeHandle por referência
     void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg);
-    void publishWheelSpeeds();
+    void publishWheelSpeeds(); // Publicando velocidades do cmd_vel
     void commandTimeoutCallback(const ros::TimerEvent&); // Callback para o timeout
-    void updateWheelSpeedForDeceleration();
-    void updateWheelSpeedForAcceleration();
+    void updateWheelSpeedForDeceleration(); // Desaceleração
+    float mapSpeed(float v_input); // Normalização da velocidade
 
 private:
     ros::NodeHandle nh;
@@ -34,6 +34,7 @@ private:
     float wheel_separation_lenght;
     float deceleration_rate; // Taxa de desaceleração
     float max_speed; // Velocidade máxima
+    float min_speed; // Velocidade mínima
 };
 
 #endif // ROBOT_HW_INTERFACE_HPP

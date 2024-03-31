@@ -13,6 +13,7 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     nh.getParam("wheel_control/wheel_separation_lenght", wheel_separation_lenght);
     nh.getParam("wheel_control/deceleration_rate", deceleration_rate);
     nh.getParam("wheel_control/max_speed", max_speed);
+    nh.getParam("wheel_control/min_speed", min_speed);
 
     base_width = (wheel_separation_width + wheel_separation_lenght) / 2;
 }
@@ -22,15 +23,19 @@ void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg)
     float vy = msg->linear.y;
     float omega = msg->angular.z;
 
-    front_left_wheel_speed = (vx - vy - (omega * base_width)) * (1 / wheel_radius);
-    front_right_wheel_speed = (vx + vy + (omega * base_width)) * (1 / wheel_radius);
-    rear_left_wheel_speed = (vx + vy - (omega * base_width)) * (1 / wheel_radius);
-    rear_right_wheel_speed = (vx - vy + (omega * base_width)) * (1 / wheel_radius);
+    front_left_wheel_speed = mapSpeed((vx - vy - (omega * base_width)) * (1 / wheel_radius));
+    front_right_wheel_speed = mapSpeed((vx + vy + (omega * base_width)) * (1 / wheel_radius));
+    rear_left_wheel_speed = mapSpeed((vx + vy - (omega * base_width)) * (1 / wheel_radius));
+    rear_right_wheel_speed = mapSpeed((vx - vy + (omega * base_width)) * (1 / wheel_radius));
 
     // Reinicia o temporizador cada vez que um comando é recebido
     command_timeout_.stop();
     command_timeout_.setPeriod(ros::Duration(0.1), true); // Reset com auto-restart
     command_timeout_.start();
+}
+
+float RobotHWInterface::mapSpeed(float v_input) {
+    return std::min(std::max(v_input, min_speed), max_speed);
 }
 
 void RobotHWInterface::publishWheelSpeeds() {
