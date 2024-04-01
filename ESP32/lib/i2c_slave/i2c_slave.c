@@ -67,6 +67,10 @@ void i2c_read_task() {
 }
 
 void i2c_write_task(int value_r, int value_l) {
+
+    value_r = value_r * 1000;
+    value_l = value_l * 1000;
+
     uint8_t tx_data[WRITE_LEN_VALUE];
 
     // "Packing" values right

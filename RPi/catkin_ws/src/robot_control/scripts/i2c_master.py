@@ -64,10 +64,10 @@ class I2CCommunication:
                 encoder_data_global[2] = value_left[0]
                 encoder_data_global[3] = value_right[0]
 
-            self.encoder_msg.front_left_encoder_data = encoder_data_global[0]
-            self.encoder_msg.front_right_encoder_data = encoder_data_global[1]
-            self.encoder_msg.rear_left_encoder_data = encoder_data_global[2]
-            self.encoder_msg.rear_right_encoder_data = encoder_data_global[3]
+            self.encoder_msg.front_left_encoder_data = encoder_data_global[0] / 1000
+            self.encoder_msg.front_right_encoder_data = encoder_data_global[1] / 1000
+            self.encoder_msg.rear_left_encoder_data = encoder_data_global[2] / 1000
+            self.encoder_msg.rear_right_encoder_data = encoder_data_global[3] / 1000
 
             self.pub_encoder.publish(self.encoder_msg)
 
