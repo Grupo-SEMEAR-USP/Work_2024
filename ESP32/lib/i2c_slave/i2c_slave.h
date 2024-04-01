@@ -20,6 +20,7 @@
 #include "utils.h"
 #include "h_bridge.h"
 #include "encoder.h"
+#include "pid.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"

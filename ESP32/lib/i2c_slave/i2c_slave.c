@@ -57,8 +57,8 @@ void i2c_read_task() {
 
         printf("Read value: %d, %d\n", read_value_r, read_value_l);
 
-        TARGET_VALUE_R = read_value_r;
-        TARGET_VALUE_L = read_value_l;
+        TARGET_VALUE_R = read_value_r / 1000;
+        TARGET_VALUE_L = read_value_l / 1000;
 
     } else {
         ESP_LOGI(TAG, "Read failed!");
@@ -102,24 +102,24 @@ void i2c_task_com() {
         teste = teste + 1;
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(teste, 0);
+        i2c_write_task(RPM_L, RPM_R);
     }
 }
 
 void task_motor_control() {
 
-    // init_gpio();
-    // init_pwm();
+    init_gpio();
+    init_pwm();
 
-    // pid_ctrl_block_handle_t pid_block_left = init_pid(PID_LEFT);
-    // pid_ctrl_block_handle_t pid_block_right = init_pid(PID_RIGHT);
-    // pcnt_unit_handle_t encoder_unit_left = init_encoder(ENC_LEFT);
-    // pcnt_unit_handle_t encoder_unit_right = init_encoder(ENC_RIGHT);
+    pid_ctrl_block_handle_t pid_block_left = init_pid(PID_LEFT);
+    pid_ctrl_block_handle_t pid_block_right = init_pid(PID_RIGHT);
+    pcnt_unit_handle_t encoder_unit_left = init_encoder(ENC_LEFT);
+    pcnt_unit_handle_t encoder_unit_right = init_encoder(ENC_RIGHT);
 
     while(1){
-        // pid_calculate(encoder_unit_left, pid_block_left, encoder_unit_right, pid_block_right);
+        pid_calculate(encoder_unit_left, pid_block_left, encoder_unit_right, pid_block_right);
 
-        // vTaskDelay(2*FREQ_COMMUNICATION / portTICK_PERIOD_MS);
+        vTaskDelay(2 * FREQ_COMMUNICATION / portTICK_PERIOD_MS);
     }
    
 }
@@ -130,7 +130,7 @@ esp_err_t create_tasks() {
     xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 5, NULL, 0);
 
     // Task 2 (core 1): control 
-    // xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
 
     return ESP_OK;
 }

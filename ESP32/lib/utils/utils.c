@@ -8,6 +8,9 @@ int TARGET_VALUE_R = 0;
 int ENCODER_READ_L = 0;
 int ENCODER_READ_R = 0;
 
+float RPM_L = 0;
+float RPM_R = 0;
+
 float LEFT_PWM_VALUE = 0;
 float RIGHT_PWM_VALUE = 0;
 

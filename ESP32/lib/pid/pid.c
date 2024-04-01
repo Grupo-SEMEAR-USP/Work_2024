@@ -35,8 +35,9 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
     //Global variables
      ENCODER_READ_L = pulse_count(upcnt_unit_L);
      ENCODER_READ_R = pulse_count(upcnt_unit_R);
-     float RPM_L = ENCODER_READ_L * PID_TICKS_TO_RPM(PID_LEFT);
-     float RPM_R = ENCODER_READ_R * PID_TICKS_TO_RPM(PID_RIGHT);
+     
+     RPM_L = ENCODER_READ_L * PID_TICKS_TO_RPM(PID_LEFT);
+     RPM_R = ENCODER_READ_R * PID_TICKS_TO_RPM(PID_RIGHT);
 
      ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RPM_L);
      ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RPM_R);

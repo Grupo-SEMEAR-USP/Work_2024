@@ -18,6 +18,9 @@ extern int ENCODER_READ_R;
 extern float LEFT_PWM_VALUE;
 extern float RIGHT_PWM_VALUE;
 
+extern float RPM_L;
+extern float RPM_R;
+
 extern int PWM_RESOLUTION;
 
 // Values for motor modeling
