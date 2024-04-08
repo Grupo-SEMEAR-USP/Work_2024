@@ -11,6 +11,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/tf.h>
 #include <cmath>
+#include <geometry_msgs/TransformStamped.h>
 
 #define HW_IF_UPDATE_FREQ 10
 #define HW_IF_TICK_PERIOD 1 / HW_IF_UPDATE_FREQ
@@ -24,6 +25,9 @@ public:
     void updateWheelSpeedForDeceleration(); // Desaceleração
     float mapSpeed(float v_input); // Normalização da velocidade
     void encoderCallback(const robot_control::encoder_data::ConstPtr& msg); // Callback para os dados do encoder
+    void updateOdometry();
+
+    int teste = 0;
 
 private:
     ros::NodeHandle nh;
@@ -42,8 +46,6 @@ private:
     // Posição atual do robô
     geometry_msgs::Point current_position;
 
-    tf::TransformBroadcaster odom_broadcaster;
-
     // Temporizador para o timeout de comandos
     ros::Timer command_timeout_; 
 
@@ -61,6 +63,21 @@ private:
     float deceleration_rate; // Taxa de desaceleração
     float max_speed; // Velocidade máxima
     float min_speed; // Velocidade mínima
+
+    // Parâmetros para a odometria 
+
+    double x;
+    double y;
+    double th;
+
+    double vel_linearx;
+    double vel_lineary;
+    double vel_angular_z;
+
+    ros::Time current_time;
+    tf::TransformBroadcaster odom_broadcaster;
+
+
 };
 
 #endif // ROBOT_HW_INTERFACE_HPP

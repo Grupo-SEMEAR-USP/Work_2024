@@ -18,8 +18,19 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     nh.getParam("wheel_control/max_speed", max_speed);
     nh.getParam("wheel_control/min_speed", min_speed);
 
-    base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
-    //base_geometry = 0.35;
+    //base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
+
+    x = 0;
+    y = 0;
+    th = 0;
+
+    vel_linearx = 0;
+    vel_lineary = 0;
+    vel_angular_z = 0;
+
+    current_time = ros::Time::now();
+
+    base_geometry = 0.35; // Para testes
 }
 
 void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
@@ -80,13 +91,62 @@ void RobotHWInterface::updateWheelSpeedForDeceleration() {
 }
 
 void RobotHWInterface::encoderCallback(const robot_control::encoder_data::ConstPtr& msg) {
-    double vel_linearx = (msg->front_right_encoder_data + msg->front_left_encoder_data + msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
-    double vel_lineary = (msg->front_right_encoder_data - msg->front_left_encoder_data - msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
-    double vel_angular_z = (msg->front_right_encoder_data - msg->front_left_encoder_data + msg->rear_right_encoder_data - msg->rear_left_encoder_data) * (wheel_radius / (4.0 * base_geometry));
 
-    std::cout << "Velocidade Linear X: " << vel_linearx << ", Velocidade Linear Y: " << vel_lineary << ", Velocidade Angular Z: " << vel_angular_z << std::endl;
+    current_time = ros::Time::now();
 
-    // aplicar lógica para mandar para a odometria
+    vel_linearx = (msg->front_right_encoder_data + msg->front_left_encoder_data + msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
+    vel_lineary = (msg->front_right_encoder_data - msg->front_left_encoder_data - msg->rear_right_encoder_data + msg->rear_left_encoder_data) * (wheel_radius / 4.0);
+    vel_angular_z = (msg->front_right_encoder_data - msg->front_left_encoder_data + msg->rear_right_encoder_data - msg->rear_left_encoder_data) * (wheel_radius / (4.0 * base_geometry));
+
+    //std::cout << "Velocidade Linear X: " << vel_linearx << ", Velocidade Linear Y: " << vel_lineary << ", Velocidade Angular Z: " << vel_angular_z << std::endl;
+
+    //std::cout << "Teste Encoder: " << teste << "\n";
+
+}
+
+void RobotHWInterface::updateOdometry() {
+
+    current_time = ros::Time::now();
+
+    double delta_x = (vel_linearx * cos(th) - vel_lineary * sin(th)) * HW_IF_TICK_PERIOD;
+    double delta_y = (vel_linearx * sin(th) + vel_lineary * cos(th)) * HW_IF_TICK_PERIOD;
+    double delta_th = vel_angular_z * HW_IF_TICK_PERIOD;
+
+    x += delta_x;
+    y += delta_y;
+    th += delta_th;
+
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+
+    geometry_msgs::TransformStamped odom_trans;
+    odom_trans.header.stamp = current_time;
+    odom_trans.header.frame_id = "odom";
+    odom_trans.child_frame_id = "base_link";
+
+    odom_trans.transform.translation.x = x;
+    odom_trans.transform.translation.y = y;
+    odom_trans.transform.translation.z = 0.0;
+    odom_trans.transform.rotation = odom_quat;
+
+    odom_broadcaster.sendTransform(odom_trans);
+
+    nav_msgs::Odometry odom;
+    odom.header.stamp = current_time;
+    odom.header.frame_id = "odom";
+
+    odom.pose.pose.position.x = x;
+    odom.pose.pose.position.y = y;
+    odom.pose.pose.position.z = 0.0;
+    odom.pose.pose.orientation = odom_quat;
+
+    odom.child_frame_id = "base_link";
+    odom.twist.twist.linear.x = vel_linearx;
+    odom.twist.twist.linear.y = vel_lineary;
+    odom.twist.twist.angular.z = vel_angular_z;
+
+    odom_pub.publish(odom);
+
+    //std::cout << "Teste Odometry: " << teste << "\n";
 
 }
 
@@ -102,7 +162,10 @@ int main(int argc, char** argv) {
 
     while (ros::ok())
     {
+        //controller.teste = controller.teste + 1;
         controller.publishWheelSpeeds();
+        controller.updateOdometry();
+        
         rate.sleep();
     }
 
