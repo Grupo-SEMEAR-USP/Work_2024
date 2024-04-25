@@ -20,23 +20,23 @@
 #include "math.h"
 
 /* PID control parameters definition. */
-#define KP_L 0.4   // Proportional gain for the left motor
+#define KP_L 2  // Proportional gain for the left motor
 #define KI_L 0     // Integral gain for the left motor
 #define KD_L 0     // Derivative gain for the left motor
 #define TICKS_TO_RPM_LEFT 0.1446  // Conversion factor from encoder ticks to RPM for the left motor
 
-#define KP_R 0     // Proportional gain for the right motor
+#define KP_R 2     // Proportional gain for the right motor
 #define KI_R 0     // Integral gain for the right motor
-#define KD_R 0.4   // Derivative gain for the right motor
+#define KD_R 0  // Derivative gain for the right motor
 #define TICKS_TO_RPM_RIGHT 0.15   // Conversion factor from encoder ticks to RPM for the right motor
 
 /* Output limits to prevent excessive control signals */
-#define Max_Output (pow(2, PWM_RESOLUTION) - 1)
-#define Min_Output -(pow(2, PWM_RESOLUTION) - 1)
+#define Max_Output 1023
+#define Min_Output -1023
 #define Max_integral 200
 #define Min_integral 0
 
-#define PERIOD 100  // Control loop period (ms)
+#define PERIOD 50  // Control loop period (ms)
 
 /* PID control sides enumeration */
 typedef enum {
