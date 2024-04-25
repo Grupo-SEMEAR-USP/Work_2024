@@ -34,7 +34,7 @@ typedef enum{
 #define HIGH    1
 
 // GPIOs of h-bridge for right motor
-#define INPUT_LEFT_1    GPIO_NUM_3
+#define INPUT_LEFT_1    GPIO_NUM_18
 #define INPUT_LEFT_2    GPIO_NUM_19
 
 // GPIOs of h-bridge for left motor

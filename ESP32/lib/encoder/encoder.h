@@ -41,7 +41,7 @@
 
     /* Left encoder defines */
     #define CHA_ENCODER_1L 2
-    #define CHA_ENCODER_2L 15
+    #define CHA_ENCODER_2L 4
 
     /* Macro functions */
 

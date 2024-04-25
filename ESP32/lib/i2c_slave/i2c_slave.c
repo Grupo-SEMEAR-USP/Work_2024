@@ -42,7 +42,7 @@ void i2c_read_task() {
     } 
     
     // "Unpacking" data values (left)
-    for(int i = 6; i < 9; i++){
+    for(int i = 6; i < 10; i++){
         read_value_l |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
     } 
 
@@ -55,7 +55,7 @@ void i2c_read_task() {
             FLAG_TARGET = false;
         }
 
-        printf("Read value: %d, %d\n", read_value_r, read_value_l);
+        //printf("Read value: %d, %d\n", read_value_r / 1000, read_value_l / 1000);
 
         TARGET_VALUE_R = read_value_r / 1000;
         TARGET_VALUE_L = read_value_l / 1000;
@@ -86,7 +86,7 @@ void i2c_write_task(int value_r, int value_l) {
     int size = i2c_slave_write_buffer(I2C_SLAVE_NUM, tx_data, WRITE_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
 
     if (size > 0) {
-        printf("Write value: %d, %d\n", value_r, value_l);
+        printf("Write value: %d, %d\n", value_r / 1000, value_l / 1000);
     } else {
         ESP_LOGI(TAG, "Write failed!");
     }
@@ -96,13 +96,11 @@ void i2c_write_task(int value_r, int value_l) {
 void i2c_task_com() {
     ESP_ERROR_CHECK(i2c_slave_init());
     i2c_write_queue = xQueueCreate(10, I2C_SLAVE_TX_BUF_LEN);
-    int teste = 0;
     while(1){
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        teste = teste + 1;
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(RPM_L, RPM_R);
+        i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
     }
 }
 
@@ -135,13 +133,14 @@ esp_err_t create_tasks() {
     return ESP_OK;
 }
 
-esp_err_t reset_i2c(i2c_port_t i2c_num){
-    // Desabilita o driver I2C
+esp_err_t reset_i2c(i2c_port_t i2c_num) {
     esp_err_t ret = i2c_driver_delete(i2c_num);
     if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to delete I2C driver: %s", esp_err_to_name(ret));
         return ret;
     }
-
-    return ret;
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    // Recreate the I2C driver
+    return i2c_slave_init();
 }
 

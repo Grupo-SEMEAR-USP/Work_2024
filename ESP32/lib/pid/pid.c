@@ -39,22 +39,22 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      RPM_L = ENCODER_READ_L * PID_TICKS_TO_RPM(PID_LEFT);
      RPM_R = ENCODER_READ_R * PID_TICKS_TO_RPM(PID_RIGHT);
 
-     ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RPM_L);
-     ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RPM_R);
+    //  ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RPM_L);
+    //  ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RPM_R);
 
      float error_motor_LEFT = (target_LEFT - RPM_L);
      float error_motor_RIGHT = (target_RIGHT - RPM_R);
     
-     ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
-     ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
+    //  ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
+    //  ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
 
      // Calculate a new PWM Value
      pid_compute(pid_block_L, error_motor_LEFT, &controll_pid_LEFT);
      pid_compute(pid_block_R, error_motor_RIGHT, &controll_pid_RIGHT);
 
 
-     ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
-     ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
+    //  ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
+    //  ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
 
      LEFT_PWM_VALUE += controll_pid_LEFT;
      RIGHT_PWM_VALUE += controll_pid_RIGHT;

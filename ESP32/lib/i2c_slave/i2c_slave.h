@@ -29,13 +29,13 @@
 #define I2C_SLAVE_NUM I2C_NUM_0
 #define I2C_SLAVE_SCL_IO 22 // ESP32 SLC Pin
 #define I2C_SLAVE_SDA_IO 21 // ESP32 SDA Pin
-#define I2C_SLAVE_TX_BUF_LEN 256
-#define I2C_SLAVE_RX_BUF_LEN 256
+#define I2C_SLAVE_TX_BUF_LEN 256 // Testar trocar para 12
+#define I2C_SLAVE_RX_BUF_LEN 256 // Testar trocar para 12
 #define I2C_SLAVE_ADDRESS 0x09 // 0x08 (Front) e 0x09 (Rear)
 
 // Definition of values used in read and write
 #define WRITE_LEN_VALUE 8
-#define READ_LEN_VALUE 9
+#define READ_LEN_VALUE 10
 #define TIMEOUT_MS 250 
 
 // Definition of values for packing and unpacking
