@@ -2,14 +2,14 @@
 
 bool FLAG_TARGET = false;
 
-int TARGET_VALUE_L = 0;
-int TARGET_VALUE_R = 0;
+float TARGET_VALUE_L = 0;
+float TARGET_VALUE_R = 0;
 
 int ENCODER_READ_L = 0;
 int ENCODER_READ_R = 0;
 
-float RPM_L = 0;
-float RPM_R = 0;
+float RADS_L = 0;
+float RADS_R = 0;
 
 float LEFT_PWM_VALUE = 0;
 float RIGHT_PWM_VALUE = 0;

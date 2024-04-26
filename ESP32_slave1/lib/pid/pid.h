@@ -23,12 +23,12 @@
 #define KP_L 2  // Proportional gain for the left motor
 #define KI_L 0     // Integral gain for the left motor
 #define KD_L 0     // Derivative gain for the left motor
-#define TICKS_TO_RPM_LEFT 0.1446  // Conversion factor from encoder ticks to RPM for the left motor
+#define TICKS_TO_RADS_LEFT 0.01514  // Conversion factor from encoder ticks to RPM for the left motor
 
 #define KP_R 2     // Proportional gain for the right motor
 #define KI_R 0     // Integral gain for the right motor
 #define KD_R 0  // Derivative gain for the right motor
-#define TICKS_TO_RPM_RIGHT 0.15   // Conversion factor from encoder ticks to RPM for the right motor
+#define TICKS_TO_RADS_RIGHT 0.01570 // Conversion factor from encoder ticks to RPM for the right motor
 
 /* Output limits to prevent excessive control signals */
 #define Max_Output 1023
@@ -49,7 +49,7 @@ typedef enum {
 #define PID_SIDE_KI(NUM) ((NUM) == PID_LEFT ? KI_L : KI_R)
 #define PID_SIDE_KD(NUM) ((NUM) == PID_LEFT ? KD_L : KD_R)
 
-#define PID_TICKS_TO_RPM(NUM) ((NUM) == PID_LEFT ? TICKS_TO_RPM_LEFT : TICKS_TO_RPM_RIGHT)
+#define PID_TICKS_TO_RADS(NUM) ((NUM) == PID_LEFT ? TICKS_TO_RADS_LEFT : TICKS_TO_RADS_RIGHT)
 
 /**
  * @brief Initializes PID controllers for each motor.
