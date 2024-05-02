@@ -40,8 +40,8 @@
     #define CHA_ENCODER_2R 19
 
     /* Left encoder defines */
-    #define CHA_ENCODER_1L 2
-    #define CHA_ENCODER_2L 4
+    #define CHA_ENCODER_1L 4
+    #define CHA_ENCODER_2L 14
 
     /* Macro functions */
 

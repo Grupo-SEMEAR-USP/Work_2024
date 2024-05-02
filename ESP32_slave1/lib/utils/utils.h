@@ -7,8 +7,8 @@
 extern bool FLAG_TARGET;
 
 // Target values that will be send to PID 
-extern int TARGET_VALUE_L;
-extern int TARGET_VALUE_R;
+extern float TARGET_VALUE_L;
+extern float TARGET_VALUE_R;
 
 // Values read from encoder
 extern int ENCODER_READ_L;
@@ -18,8 +18,8 @@ extern int ENCODER_READ_R;
 extern float LEFT_PWM_VALUE;
 extern float RIGHT_PWM_VALUE;
 
-extern float RPM_L;
-extern float RPM_R;
+extern float RADS_L;
+extern float RADS_R;
 
 extern int PWM_RESOLUTION;
 
