@@ -55,7 +55,7 @@ void i2c_read_task() {
             FLAG_TARGET = false;
         }
 
-        //printf("Read value: %d, %d\n", read_value_r / 1000, read_value_l / 1000);
+        printf("Read value: %d, %d\n", read_value_r, read_value_l);
 
         TARGET_VALUE_R = read_value_r / 1000;
         TARGET_VALUE_L = read_value_l / 1000;
@@ -100,7 +100,7 @@ void i2c_task_com() {
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
+        //i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
     }
 }
 
@@ -128,7 +128,7 @@ esp_err_t create_tasks() {
     xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 5, NULL, 0);
 
     // Task 2 (core 1): control 
-    xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
+    //xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
 
     return ESP_OK;
 }
@@ -140,7 +140,5 @@ esp_err_t reset_i2c(i2c_port_t i2c_num) {
         return ret;
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
-    // Recreate the I2C driver
     return i2c_slave_init();
 }
-
