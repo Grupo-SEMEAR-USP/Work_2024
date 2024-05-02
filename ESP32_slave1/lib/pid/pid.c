@@ -24,7 +24,7 @@ pid_ctrl_block_handle_t init_pid(pid_side_t side){
     return pid_block;
 }
 
-void PWM_limit(int *PWM){
+void PWM_limit(float *PWM){
   if (*PWM > 1023){
     *PWM = 1023;
   }
@@ -36,12 +36,14 @@ void PWM_limit(int *PWM){
 esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t pid_block_L, pcnt_unit_handle_t upcnt_unit_R, pid_ctrl_block_handle_t pid_block_R){
   float controll_pid_LEFT = 0;
   float controll_pid_RIGHT = 0;
-
   //Target values received is represented in RAD/s
-  float target_LEFT = 6;
-  float target_RIGHT = 6;
+  float target_LEFT = 0;
+  float target_RIGHT = 0;
 
-   while(!FLAG_TARGET){
+   while(1){
+
+      // ESP_LOGI(TAG_PID, "Target ESQUERDA: %f", TARGET_VALUE_L);
+      // ESP_LOGI(TAG_PID, "Target DIREITA: %f", TARGET_VALUE_R);
 
     //Global variables
      ENCODER_READ_L = pulse_count(upcnt_unit_L);
@@ -53,14 +55,14 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      RADS_L = ENCODER_READ_L * PID_TICKS_TO_RADS(PID_LEFT);
      RADS_R = ENCODER_READ_R * PID_TICKS_TO_RADS(PID_RIGHT);
 
-     ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RADS_L);
-     ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RADS_R);
+    //  ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RADS_L);
+    //  ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RADS_R);
 
-     float error_motor_LEFT = (target_LEFT - RADS_L);
-     float error_motor_RIGHT = (target_RIGHT - RADS_R);
+     float error_motor_LEFT = (TARGET_VALUE_L - RADS_L);
+     float error_motor_RIGHT = (TARGET_VALUE_R - RADS_R);
     
-     ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
-     ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
+    //  ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
+    //  ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
 
      // Calculate a new PWM Value
      if(pid_compute(pid_block_L, error_motor_LEFT, &controll_pid_LEFT) != ESP_OK){
@@ -88,7 +90,7 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      controll_pid_LEFT = 0;
      controll_pid_RIGHT = 0;
 
-     vTaskDelay(PERIOD / portTICK_PERIOD_MS);
+     vTaskDelay(50 / portTICK_PERIOD_MS);
 
    }
 

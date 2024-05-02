@@ -55,10 +55,13 @@ void i2c_read_task() {
             FLAG_TARGET = false;
         }
 
-        //printf("Read value: %d, %d\n", read_value_r / 1000, read_value_l / 1000);
+        TARGET_VALUE_R = read_value_r;
+        TARGET_VALUE_L = read_value_l;
 
-        TARGET_VALUE_R = read_value_r / 1000;
-        TARGET_VALUE_L = read_value_l / 1000;
+        TARGET_VALUE_R = TARGET_VALUE_R / 1000;
+        TARGET_VALUE_L = TARGET_VALUE_L / 1000;
+
+        //printf("Read value: %f, %f\n", TARGET_VALUE_R, TARGET_VALUE_L);
 
     } else {
         ESP_LOGI(TAG, "Read failed!");
@@ -86,7 +89,7 @@ void i2c_write_task(int value_r, int value_l) {
     int size = i2c_slave_write_buffer(I2C_SLAVE_NUM, tx_data, WRITE_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
 
     if (size > 0) {
-        printf("Write value: %d, %d\n", value_r / 1000, value_l / 1000);
+        //printf("Write value: %d, %d\n", value_r / 1000, value_l / 1000);
     } else {
         ESP_LOGI(TAG, "Write failed!");
     }
@@ -100,7 +103,7 @@ void i2c_task_com() {
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
+        //i2c_write_task(10, 80);
     }
 }
 
@@ -108,6 +111,7 @@ void task_motor_control() {
 
     init_gpio();
     init_pwm();
+
 
     pid_ctrl_block_handle_t pid_block_left = init_pid(PID_LEFT);
     pid_ctrl_block_handle_t pid_block_right = init_pid(PID_RIGHT);
@@ -125,7 +129,7 @@ void task_motor_control() {
 esp_err_t create_tasks() {
 
     // Task 1 (core 0): read + write data
-    xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 5, NULL, 0);
+    xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 1, NULL, 0);
 
     // Task 2 (core 1): control 
     xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
