@@ -11,7 +11,7 @@ ESP32_ADDRESS_FRONT = 0x08
 ESP32_ADDRESS_REAR = 0x09
 I2C_BUS = 1
 REG_ADDRESS = 10
-MAX_WHEEL_VELOCITY = 2000  # Velocidade máxima permitida em unidades do sensor
+MAX_WHEEL_VELOCITY = 5.3  # Velocidade máxima permitida em unidades do sensor
 
 encoder_data_global = [0, 0, 0, 0]
 

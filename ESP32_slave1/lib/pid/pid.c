@@ -37,8 +37,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
   float controll_pid_LEFT = 0;
   float controll_pid_RIGHT = 0;
   //Target values received is represented in RAD/s
-  float target_LEFT = 0;
-  float target_RIGHT = 0;
+  // float target_LEFT = 5;
+  // float target_RIGHT = 5;
 
    while(1){
 
@@ -51,7 +51,7 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
 
      ESP_LOGI(TAG_PID, "Encoder ESQUERDA: %d", ENCODER_READ_L);
      ESP_LOGI(TAG_PID, "Encoder DIREITA: %d", ENCODER_READ_R);
-     
+
      RADS_L = ENCODER_READ_L * PID_TICKS_TO_RADS(PID_LEFT);
      RADS_R = ENCODER_READ_R * PID_TICKS_TO_RADS(PID_RIGHT);
 
@@ -72,8 +72,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
         ESP_LOGE(TAG_PID, "Error computing PID");
       }
 
-     ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
-     ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
+    //  ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
+    //  ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
 
      LEFT_PWM_VALUE += controll_pid_LEFT;
      RIGHT_PWM_VALUE += controll_pid_RIGHT;
@@ -81,8 +81,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
     PWM_limit(&LEFT_PWM_VALUE);
     PWM_limit(&RIGHT_PWM_VALUE);
     
-    ESP_LOGI(TAG_PID, "PWM DIREITA: %f", RIGHT_PWM_VALUE);
-    ESP_LOGI(TAG_PID, "PWM ESQUERDA: %f", LEFT_PWM_VALUE);
+    // ESP_LOGI(TAG_PID, "PWM DIREITA: %f", RIGHT_PWM_VALUE);
+    // ESP_LOGI(TAG_PID, "PWM ESQUERDA: %f", LEFT_PWM_VALUE);
 
      update_motor(LEFT, LEFT_PWM_VALUE);
      update_motor(RIGHT, RIGHT_PWM_VALUE);
@@ -90,7 +90,7 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      controll_pid_LEFT = 0;
      controll_pid_RIGHT = 0;
 
-     vTaskDelay(50 / portTICK_PERIOD_MS);
+     vTaskDelay(60 / portTICK_PERIOD_MS);
 
    }
 

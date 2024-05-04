@@ -37,7 +37,7 @@
 
     /* Right encoder defines */
     #define CHA_ENCODER_1R 15
-    #define CHA_ENCODER_2R 5
+    #define CHA_ENCODER_2R 14
 
     /* Left encoder defines */
     #define CHA_ENCODER_1L 18

@@ -61,7 +61,7 @@ void i2c_read_task() {
         TARGET_VALUE_R = TARGET_VALUE_R / 1000;
         TARGET_VALUE_L = TARGET_VALUE_L / 1000;
 
-        //printf("Read value: %f, %f\n", TARGET_VALUE_R, TARGET_VALUE_L);
+        printf("Read value: %f, %f\n", TARGET_VALUE_R, TARGET_VALUE_L);
 
     } else {
         ESP_LOGI(TAG, "Read failed!");
@@ -103,6 +103,7 @@ void i2c_task_com() {
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
+        //i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
         //i2c_write_task(10, 80);
     }
 }
@@ -144,7 +145,5 @@ esp_err_t reset_i2c(i2c_port_t i2c_num) {
         return ret;
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
-    // Recreate the I2C driver
     return i2c_slave_init();
 }
-
