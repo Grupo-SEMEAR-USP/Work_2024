@@ -58,7 +58,7 @@ class I2CCommunication:
         except smbus.SMBusError as e:
             rospy.logerr(f"Erro na leitura I2C: {str(e)}")
             sleep(0.5)  # Espera antes de tentar novamente
-            self.read_data()  # Tenta ler novamente
+            self.read_data()  # Tenta ler novament
 
     def write_data(self):
         try:
