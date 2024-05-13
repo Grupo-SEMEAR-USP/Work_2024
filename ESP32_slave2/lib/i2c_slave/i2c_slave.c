@@ -55,7 +55,7 @@ void i2c_read_task() {
             FLAG_TARGET = false;
         }
 
-        //printf("Read value: %d, %d\n", read_value_r / 1000, read_value_l / 1000);
+        printf("Read value: %d, %d\n", read_value_r / 1000, read_value_l / 1000);
 
         TARGET_VALUE_R = read_value_r / 1000;
         TARGET_VALUE_L = read_value_l / 1000;
@@ -86,7 +86,7 @@ void i2c_write_task(int value_r, int value_l) {
     int size = i2c_slave_write_buffer(I2C_SLAVE_NUM, tx_data, WRITE_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
 
     if (size > 0) {
-        printf("Write value: %d, %d\n", value_r / 1000, value_l / 1000);
+        //printf("Write value: %d, %d\n", value_r / 1000, value_l / 1000);
     } else {
         ESP_LOGI(TAG, "Write failed!");
     }

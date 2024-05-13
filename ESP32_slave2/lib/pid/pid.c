@@ -43,8 +43,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
      ENCODER_READ_L = pulse_count(upcnt_unit_L);
      ENCODER_READ_R = pulse_count(upcnt_unit_R);
 
-    //  ESP_LOGI(TAG_PID, "Encoder ESQUERDA: %d", ENCODER_READ_L);
-    //  ESP_LOGI(TAG_PID, "Encoder DIREITA: %d", ENCODER_READ_R);
+     ESP_LOGI(TAG_PID, "Encoder ESQUERDA: %d", ENCODER_READ_L);
+     ESP_LOGI(TAG_PID, "Encoder DIREITA: %d", ENCODER_READ_R);
      
      RADS_L = ENCODER_READ_L * PID_TICKS_TO_RADS(PID_LEFT);
      RADS_R = ENCODER_READ_R * PID_TICKS_TO_RADS(PID_RIGHT);
@@ -52,8 +52,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
     //  ESP_LOGI(TAG_PID, "Velocidade inicial ESQUERDA: %f", RADS_L);
     //  ESP_LOGI(TAG_PID, "Velocidade inicial DIREITA: %f", RADS_R);
 
-     float error_motor_LEFT = (target_LEFT - RADS_L);
-     float error_motor_RIGHT = (target_RIGHT - RADS_R);
+     float error_motor_LEFT = (TARGET_VALUE_L - RADS_L);
+     float error_motor_RIGHT = (TARGET_VALUE_R - RADS_R);
     
     //  ESP_LOGI(TAG_PID, "Erro ESQUERDA: %f", error_motor_LEFT);
     //  ESP_LOGI(TAG_PID, "Erro DIREITA: %f", error_motor_RIGHT);
@@ -66,8 +66,8 @@ esp_err_t pid_calculate(pcnt_unit_handle_t upcnt_unit_L, pid_ctrl_block_handle_t
         ESP_LOGE(TAG_PID, "Error computing PID");
       }
 
-    //  ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
-    //  ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
+     ESP_LOGI(TAG_PID, "PWM command ESQUERDA: %f", controll_pid_LEFT);
+     ESP_LOGI(TAG_PID, "PWM command DIREITA: %f", controll_pid_RIGHT);
 
      LEFT_PWM_VALUE += controll_pid_LEFT;
      RIGHT_PWM_VALUE += controll_pid_RIGHT;

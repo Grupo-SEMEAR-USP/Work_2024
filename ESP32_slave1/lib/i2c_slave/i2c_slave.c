@@ -103,7 +103,7 @@ void i2c_task_com() {
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
-        //i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
+        i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
         //i2c_write_task(10, 80);
     }
 }
