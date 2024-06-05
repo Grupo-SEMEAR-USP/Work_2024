@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <robot name="robot_description">
+
+<material name="red">
+  <color rgba="1.0 0.0 0.0 1.0"/>
+</material>
+
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% LINKS %%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
   <!-- %%%%%%%%%%%%%%%%%%%%%%% BASE LINK %%%%%%%%%%%%%%%%%%%%%%% -->
     <link name="base_link">
@@ -61,10 +66,9 @@
       <visual>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/fr_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
         <material
           name="">
@@ -75,10 +79,9 @@
       <collision>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/fr_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
       </collision>   
     </link>
@@ -101,10 +104,9 @@
       <visual>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/fl_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
         <material
           name="">
@@ -115,10 +117,9 @@
       <collision>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/fl_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
       </collision>
     </link>
@@ -141,10 +142,9 @@
       <visual>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/br_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
         <material
           name="">
@@ -155,10 +155,9 @@
       <collision>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/br_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
       </collision>
     </link>
@@ -181,10 +180,9 @@
       <visual>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/bl_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
         <material
           name="">
@@ -195,10 +193,9 @@
       <collision>
         <origin
           xyz="0 0 0"
-          rpy="0 0 0" />
+          rpy="1.5708 0 0" />
         <geometry>
-          <mesh
-            filename="package://robot_description/meshes/bl_wheel_link.STL" />
+          <cylinder radius="0.048" length="0.02" />
         </geometry>
       </collision>
     </link>
@@ -206,7 +203,7 @@
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% JOINTS %%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
   <!-- %%%%%%%%%%%%%%%%%%%% FR WHEEL JOINT %%%%%%%%%%%%%%%%%%%% -->
     <joint name="fr_wheel_joint"
-      type="continuous">
+      type="fixed">
       <origin
         xyz="0.10615 -0.085325 -0.0303"
         rpy="0 0 0" />
@@ -215,11 +212,11 @@
       <child
         link="fr_wheel_link" />
       <axis
-        xyz="0 -1 0" />
+        xyz="0 1 0" />
     </joint>
   <!-- %%%%%%%%%%%%%%%%%%%%% FL WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
     <joint name="fl_wheel_joint"
-      type="continuous">
+      type="fixed">
       <origin
         xyz="0.10615 0.085325 -0.0303"
         rpy="0 0 0" />
@@ -232,7 +229,7 @@
     </joint>
   <!-- %%%%%%%%%%%%%%%%%%%%% BR WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
     <joint name="br_wheel_joint"
-      type="continuous">
+      type="fixed">
       <origin
         xyz="-0.10615 -0.085325 -0.0303"
         rpy="0 0 0" />
@@ -241,11 +238,11 @@
       <child
         link="br_wheel_link" />
       <axis
-        xyz="0 -1 0" />
+        xyz="0 1 0" />
     </joint>
   <!-- %%%%%%%%%%%%%%%%%%%%% BR WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
     <joint name="bl_wheel_joint"
-      type="continuous">
+      type="fixed">
       <origin
         xyz="-0.10615 0.085325 -0.0303"
         rpy="0 0 0" />
@@ -257,28 +254,85 @@
         xyz="0 1 0" />
     </joint>
 
-  <!-- ros_control plugin -->
-    <gazebo>
-      <plugin name="zm_robot_diff_drive" filename="libgazebo_ros_mecanum_drive.so">
-        <commandTopic>cmd_vel</commandTopic>
-        <odometryTopic>odom</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <robotBaseFrame>base_footprint</robotBaseFrame>
-        <LeftRear>bl_wheel_link</LeftRear>
-        <LeftFront>fl_wheel_link</LeftFront>
-        <RightFront>fr_wheel_link</RightFront>
-        <RightRear>br_wheel_link</RightRear>
-        <odometryRate>50</odometryRate>      
-        <publishWheelTF>false</publishWheelTF>
-        <publishWheelJointState>true</publishWheelJointState>
-        <WheelTorque>40</WheelTorque>
-        <WheelSeparationW>0.5</WheelSeparationW>
-        <WheelSeparationL>0.6</WheelSeparationL>
-        <wheelAccel>50</wheelAccel>
-        <wheelDiameter>0.13</wheelDiameter>
-        <publishOdom>true</publishOdom>
-        <isRollerModel>true</isRollerModel>
-      </plugin>
-   </gazebo>
+    <joint name="laser_joint"
+      type="fixed">
+      <origin
+        xyz="0.14 0 0.001"
+        rpy="0 0 0" />
+      <parent
+        link="base_link" />
+      <child
+        link="laser_frame" />
+    </joint>
+
+    <link name="laser_frame">
+      <visual>
+        <geometry>
+          <cylinder radius="0.02" length="0.02"/>
+        </geometry>
+        <material name="red">
+          
+        </material>
+      </visual>
+
+      <collision>
+        <geometry>
+          <cylinder radius="0.02" length="0.02"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.01" />
+        <inertia
+          ixx="3.6789E-06"
+          ixy="-1.5032E-22"
+          ixz="-2.9973E-21"
+          iyy="3.5671E-06"
+          iyz="1.1701E-21"
+          izz="3.6789E-06" />
+      </inertial>
+    </link>
+
+  <gazebo reference="laser_frame">
+    <material>Gazebo/Red</material>
+
+    <sensor name="laser" type="ray">
+        <pose> 0 0 0 0 0 0 </pose>
+        <visualize>false</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+            <scan>
+                <horizontal>
+                    <samples>360</samples>
+                    <min_angle>-3.14</min_angle>
+                    <max_angle>3.14</max_angle>
+                </horizontal>
+            </scan>
+            <range>
+                <min>0.3</min>
+                <max>12</max>
+            </range>
+        </ray>
+        <plugin name="laser_controller" filename="libgazebo_ros_laser.so">
+            <topicName>/scan</topicName>
+            <frameName>laser_frame</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>100.0</odometryRate>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <publishTF>true</publishTF>
+    </plugin>
+  </gazebo>
 
 </robot>

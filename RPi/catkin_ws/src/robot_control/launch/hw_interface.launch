@@ -1,29 +1,10 @@
 <launch>
 
-  <!-- <node name="i2c_master" pkg="robot_control" type="i2c_master.py" />  -->
+  <node name="i2c_master" pkg="robot_control" type="i2c_master.py" /> 
 
   <!-- Carregar parâmetros do arquivo config.yaml -->
   <rosparam file="$(find robot_control)/config/wheel_control.yaml" command="load" />
 
   <!-- Iniciar o nó hw_interface -->
   <node name="hw_interface" pkg="robot_control" type="hw_interface" output="screen" />
-
-
-  <param name="robot_description" textfile="$(find robot_description)/urdf/robot_description.urdf" />
-
-  <include
-    file="$(find gazebo_ros)/launch/empty_world.launch" />
-    
-  <node
-    name="spawn_model"
-    pkg="gazebo_ros"
-    type="spawn_model"
-    args="-file $(find robot_description)/urdf/robot_description.urdf -urdf -model robot_description"
-    output="screen" />
-
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-     <param name="publish_frequency" type="double" value="50.0" />
-  </node>
-
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 </launch>

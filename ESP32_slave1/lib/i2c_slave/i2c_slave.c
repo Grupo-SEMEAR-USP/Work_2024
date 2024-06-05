@@ -10,12 +10,14 @@ esp_err_t i2c_slave_init(void) {
 
     i2c_config_t conf_slave = {
         .sda_io_num = I2C_SLAVE_SDA_IO,         
-        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .sda_pullup_en = GPIO_PULLUP_DISABLE,
         .scl_io_num = I2C_SLAVE_SCL_IO,          
-        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_DISABLE,
         .mode = I2C_MODE_SLAVE,
         .slave.addr_10bit_en = 0,
+        // .slave.maximum_speed = 400000,
         .slave.slave_addr = I2C_SLAVE_ADDRESS,
+        // .clk_flags = 0,
     };
 
     esp_err_t err = i2c_param_config(i2c_slave_port, &conf_slave);
@@ -24,7 +26,21 @@ esp_err_t i2c_slave_init(void) {
         return err;
     }
     
-    return i2c_driver_install(i2c_slave_port, conf_slave.mode, I2C_SLAVE_RX_BUF_LEN, I2C_SLAVE_TX_BUF_LEN, 0);
+    return i2c_driver_install(i2c_slave_port, conf_slave.mode, (size_t) I2C_SLAVE_RX_BUF_LEN, (size_t) I2C_SLAVE_TX_BUF_LEN, 0);
+}
+
+static void disp_buf(uint8_t *buf, int len)
+{
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        printf("%02x ", buf[i]);
+        if ((i + 1) % 16 == 0)
+        {
+            printf("\n");
+        }
+    }
+    printf("\n");
 }
 
 void i2c_read_task() {
@@ -34,7 +50,9 @@ void i2c_read_task() {
 
     uint8_t rx_data[I2C_SLAVE_RX_BUF_LEN];
 
-    int size = i2c_slave_read_buffer(I2C_SLAVE_NUM, rx_data, READ_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
+    int size = i2c_slave_read_buffer(I2C_SLAVE_NUM, rx_data, (size_t) READ_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
+
+    // disp_buf(rx_data, 256);
 
     // "Unpacking" data values (right)
     for(int i = 2; i < 6; i++){
@@ -68,6 +86,8 @@ void i2c_read_task() {
     }
 
 }
+
+
 
 void i2c_write_task(int value_r, int value_l) {
 
@@ -104,7 +124,6 @@ void i2c_task_com() {
         i2c_read_task();
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
-        //i2c_write_task(10, 80);
     }
 }
 
@@ -133,7 +152,7 @@ esp_err_t create_tasks() {
     xTaskCreatePinnedToCore(i2c_task_com, "i2c_task_com", 4096, NULL, 1, NULL, 0);
 
     // Task 2 (core 1): control 
-    xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
+    //xTaskCreatePinnedToCore(task_motor_control, "task_motor_control", 4096, NULL, 1, NULL, 1);
 
     return ESP_OK;
 }

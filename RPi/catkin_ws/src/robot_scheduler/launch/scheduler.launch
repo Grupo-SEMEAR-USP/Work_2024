@@ -1,0 +1,11 @@
+<launch>
+    <!-- Task Scheduler Node -->
+    <node name="robot_scheduler"
+          pkg="robot_scheduler"
+          type="robot_scheduler.py"
+          output="screen">
+    </node>
+
+    <node name="smach_viewer" pkg="smach_viewer" type="smach_viewer.py" />
+    
+</launch>

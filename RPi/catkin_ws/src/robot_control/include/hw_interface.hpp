@@ -76,8 +76,6 @@ private:
 
     ros::Time current_time;
     tf::TransformBroadcaster odom_broadcaster;
-
-
 };
 
 #endif // ROBOT_HW_INTERFACE_HPP

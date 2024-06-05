@@ -1,0 +1,10 @@
+# Goal definition
+int32 shelf_id
+
+---
+# Result definition
+bool success
+
+---
+# Feedback definition
+float32 distance_to_shelf
