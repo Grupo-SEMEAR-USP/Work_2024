@@ -7,32 +7,7 @@
 
 void app_main(void)
 {
-    init_gpio();
-    init_pwm();
 
-    while(1){
-        update_motor(RIGHT, 5000);
-    }
-
-
-
-    // create_tasks();
-
-    // init_gpio();
-    // init_pwm();
-    
-
-    // int contador = 0;
-
-    // //create_tasks();
-    // while(1){
-    //     update_motor(LEFT, contador);
-    //     update_motor(RIGHT, contador);
-
-    //     sleep(1);
-
-    //     contador += 100;
-    // }
-
+    create_tasks();
 
 }

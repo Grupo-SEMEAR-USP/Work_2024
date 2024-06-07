@@ -10,12 +10,12 @@ esp_err_t i2c_slave_init(void) {
 
     i2c_config_t conf_slave = {
         .sda_io_num = I2C_SLAVE_SDA_IO,         
-        .sda_pullup_en = GPIO_PULLUP_DISABLE,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
         .scl_io_num = I2C_SLAVE_SCL_IO,          
-        .scl_pullup_en = GPIO_PULLUP_DISABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
         .mode = I2C_MODE_SLAVE,
         .slave.addr_10bit_en = 0,
-        // .slave.maximum_speed = 400000,
+        .slave.maximum_speed = 400000,
         .slave.slave_addr = I2C_SLAVE_ADDRESS,
         // .clk_flags = 0,
     };
@@ -26,7 +26,7 @@ esp_err_t i2c_slave_init(void) {
         return err;
     }
     
-    return i2c_driver_install(i2c_slave_port, conf_slave.mode, (size_t) I2C_SLAVE_RX_BUF_LEN, (size_t) I2C_SLAVE_TX_BUF_LEN, 0);
+    return i2c_driver_install(i2c_slave_port, conf_slave.mode, I2C_SLAVE_RX_BUF_LEN, I2C_SLAVE_TX_BUF_LEN, 0);
 }
 
 static void disp_buf(uint8_t *buf, int len)
@@ -50,9 +50,9 @@ void i2c_read_task() {
 
     uint8_t rx_data[I2C_SLAVE_RX_BUF_LEN];
 
-    int size = i2c_slave_read_buffer(I2C_SLAVE_NUM, rx_data, (size_t) READ_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
+    int size = i2c_slave_read_buffer(I2C_SLAVE_NUM, rx_data, READ_LEN_VALUE, TIMEOUT_MS / portTICK_PERIOD_MS);
 
-    // disp_buf(rx_data, 256);
+    //disp_buf(rx_data, 256);
 
     // "Unpacking" data values (right)
     for(int i = 2; i < 6; i++){
@@ -120,10 +120,9 @@ void i2c_task_com() {
     ESP_ERROR_CHECK(i2c_slave_init());
     i2c_write_queue = xQueueCreate(10, I2C_SLAVE_TX_BUF_LEN);
     while(1){
-        vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_read_task();
-        vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
         i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
+        vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
     }
 }
 

@@ -1,4 +1,4 @@
-#ifndef __I2CSLAVE__
+i#ifndef __I2CSLAVE__
 #define __I2CSLAVE__
 
 /**
