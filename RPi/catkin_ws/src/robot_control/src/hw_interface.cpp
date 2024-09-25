@@ -10,15 +10,32 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     encoder_sub = nh.subscribe("/encoder_data", 10, &RobotHWInterface::encoderCallback, this);
     odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 50);
 
-    // Carregar parâmetros do arquivo .yaml
-    nh.getParam("wheel_control/wheel_radius", wheel_radius);
-    nh.getParam("wheel_control/wheel_separation_width", wheel_separation_width);
-    nh.getParam("wheel_control/wheel_separation_lenght", wheel_separation_lenght);
-    nh.getParam("wheel_control/deceleration_rate", deceleration_rate);
-    nh.getParam("wheel_control/max_speed", max_speed);
-    nh.getParam("wheel_control/min_speed", min_speed);
+    // // Carregar parâmetros do arquivo .yaml
+    // nh.getParam("wheel_control/wheel_radius", wheel_radius);
+    // nh.getParam("wheel_control/wheel_separation_width", wheel_separation_width);
+    // nh.getParam("wheel_control/wheel_separation_lenght", wheel_separation_lenght);
+    // nh.getParam("wheel_control/deceleration_rate", deceleration_rate);
+    // nh.getParam("wheel_control/max_speed", max_speed);
+    // nh.getParam("wheel_control/min_speed", min_speed);
 
-    //base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
+    // base_geometry = (wheel_separation_width + wheel_separation_lenght) / 2;
+
+    // Improved parameter loading with default values
+    nh.param("wheel_control/wheel_radius", wheel_radius, 0.05f); // Default value: 0.05
+    nh.param("wheel_control/wheel_separation_width", wheel_separation_width, 0.2f); // Default value: 0.2
+    nh.param("wheel_control/wheel_separation_length", wheel_separation_length, 0.2f); // Default value: 0.2
+    nh.param("wheel_control/deceleration_rate", deceleration_rate, 0.1f); // Default value: 0.1
+    nh.param("wheel_control/max_speed", max_speed, 1.0f); // Default value: 1.0
+    nh.param("wheel_control/min_speed", min_speed, -1.0f); // Default value: -1.0
+
+    // Validate parameters
+    if (wheel_radius <= 0 || wheel_separation_width <= 0 || wheel_separation_length <= 0) {
+        ROS_FATAL("Invalid geometry parameters. Please check the configuration.");
+        ros::shutdown();
+    }
+
+    // Initialize base_geometry properly (assuming it's meant to be calculated)
+    base_geometry = (wheel_separation_width + wheel_separation_length) / 2.0;
 
     x = 0;
     y = 0;
@@ -28,24 +45,32 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     vel_lineary = 0;
     vel_angular_z = 0;
 
-    current_time = ros::Time::now();
+    auto current_time = ros::Time::now();
 
-    base_geometry = 0.35; // Para testes
 }
 
 void RobotHWInterface::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
-    float vx = msg->linear.x;
-    float vy = msg->linear.y;
-    float omega = msg->angular.z;
+    const float vx = msg->linear.x;
+    const float vy = msg->linear.y;
+    const float omega = msg->angular.z;
 
-    front_left_wheel_speed = mapSpeed((vx - vy - (omega * base_geometry)) * (1 / wheel_radius));
-    front_right_wheel_speed = mapSpeed((vx + vy + (omega * base_geometry)) * (1 / wheel_radius));
-    rear_left_wheel_speed = mapSpeed((vx + vy - (omega * base_geometry)) * (1 / wheel_radius));
-    rear_right_wheel_speed = mapSpeed((vx - vy + (omega * base_geometry)) * (1 / wheel_radius));
+    // Ensure wheel_radius is not zero to avoid division by zero error
+    if (wheel_radius == 0) {
+        ROS_ERROR("wheel_radius is zero, cannot calculate wheel speeds");
+        return;
+    }
 
-    // Reinicia o temporizador cada vez que um comando é recebido
+    const float speed_multiplier = 1 / wheel_radius;
+    const float omega_effect = omega * base_geometry;
+
+    front_left_wheel_speed = mapSpeed((vx - vy - omega_effect) * speed_multiplier);
+    front_right_wheel_speed = mapSpeed((vx + vy + omega_effect) * speed_multiplier);
+    rear_left_wheel_speed = mapSpeed((vx + vy - omega_effect) * speed_multiplier);
+    rear_right_wheel_speed = mapSpeed((vx - vy + omega_effect) * speed_multiplier);
+
+    // Reset the command timeout with auto-restart
     command_timeout_.stop();
-    command_timeout_.setPeriod(ros::Duration(0.1), true); // Reset com auto-restart
+    command_timeout_.setPeriod(ros::Duration(0.05), true);
     command_timeout_.start();
 }
 

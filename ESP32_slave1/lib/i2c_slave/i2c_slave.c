@@ -10,14 +10,14 @@ esp_err_t i2c_slave_init(void) {
 
     i2c_config_t conf_slave = {
         .sda_io_num = I2C_SLAVE_SDA_IO,         
-        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .sda_pullup_en = GPIO_PULLUP_DISABLE,
         .scl_io_num = I2C_SLAVE_SCL_IO,          
-        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_DISABLE,
         .mode = I2C_MODE_SLAVE,
         .slave.addr_10bit_en = 0,
         .slave.maximum_speed = 400000,
         .slave.slave_addr = I2C_SLAVE_ADDRESS,
-        // .clk_flags = 0,
+        .clk_flags = 0,
     };
 
     esp_err_t err = i2c_param_config(i2c_slave_port, &conf_slave);
@@ -29,19 +29,19 @@ esp_err_t i2c_slave_init(void) {
     return i2c_driver_install(i2c_slave_port, conf_slave.mode, I2C_SLAVE_RX_BUF_LEN, I2C_SLAVE_TX_BUF_LEN, 0);
 }
 
-static void disp_buf(uint8_t *buf, int len)
-{
-    int i;
-    for (i = 0; i < len; i++)
-    {
-        printf("%02x ", buf[i]);
-        if ((i + 1) % 16 == 0)
-        {
-            printf("\n");
-        }
-    }
-    printf("\n");
-}
+// static void disp_buf(uint8_t *buf, int len)
+// {
+//     int i;
+//     for (i = 0; i < len; i++)
+//     {
+//         printf("%02x ", buf[i]);
+//         if ((i + 1) % 16 == 0)
+//         {
+//             printf("\n");
+//         }
+//     }
+//     printf("\n");
+// }
 
 void i2c_read_task() {
 
@@ -116,6 +116,8 @@ void i2c_write_task(int value_r, int value_l) {
     
 }
 
+
+// Task de comunicação, com a função Read e Write em um loop continuo
 void i2c_task_com() {
     ESP_ERROR_CHECK(i2c_slave_init());
     i2c_write_queue = xQueueCreate(10, I2C_SLAVE_TX_BUF_LEN);
@@ -126,6 +128,7 @@ void i2c_task_com() {
     }
 }
 
+// Task de controle: pid, pwm, encoders...
 void task_motor_control() {
 
     init_gpio();

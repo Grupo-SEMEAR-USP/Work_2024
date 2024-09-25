@@ -1,0 +1,13 @@
+digraph G {
+"manip_link" -> "camera_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 3.634 sec old)\nBuffer length: 0.000 sec\n"];
+"plat_link" -> "manip_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 50.847 Hz\nMost recent transform: 3.621 ( 0.013 sec old)\nBuffer length: 1.180 sec\n"];
+"base_link" -> "depth_camera_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 3.634 sec old)\nBuffer length: 0.000 sec\n"];
+"odom" -> "base_link"[label="Broadcaster: /gazebo\nAverage rate: 48.454 Hz\nMost recent transform: 3.632 ( 0.002 sec old)\nBuffer length: 1.197 sec\n"];
+"manip_link" -> "garra1_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 50.847 Hz\nMost recent transform: 3.621 ( 0.013 sec old)\nBuffer length: 1.180 sec\n"];
+"manip_link" -> "garra2_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 50.847 Hz\nMost recent transform: 3.621 ( 0.013 sec old)\nBuffer length: 1.180 sec\n"];
+"base_link" -> "plat_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 50.847 Hz\nMost recent transform: 3.621 ( 0.013 sec old)\nBuffer length: 1.180 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 3.634"[ shape=plaintext ] ;
+ }->"odom";
+}

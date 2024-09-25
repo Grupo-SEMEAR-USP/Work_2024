@@ -1,0 +1,7 @@
+<launch>
+  <!-- <include file="$(find robot_arm_control)/launch/gazebo.launch"/> -->
+  <!-- <include file="$(find robot_arm_control)/launch/move_group.launch"/>
+  <include file="$(find robot_arm_control)/launch/moveit_rviz.launch"/> -->
+
+  <include file="$(find apriltag_ros)/launch/continuous_detection.launch"/>
+</launch>

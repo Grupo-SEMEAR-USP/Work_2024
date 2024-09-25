@@ -1,0 +1,14 @@
+<launch>
+  <!-- Argumento para habilitar o modo de depuração -->
+  <arg name="debug" default="false" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <!-- Argumento para a configuração do RViz -->
+  <arg name="rviz_config" default="$(find robot_arm_control)/launch/moveit.rviz" />
+  
+  <!-- Carregar a configuração do RViz -->
+  <node name="$(anon rviz)" launch-prefix="$(arg launch_prefix)" pkg="rviz" type="rviz" respawn="false"
+        args="-d $(arg rviz_config)" output="screen">
+  </node>
+</launch>

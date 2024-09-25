@@ -1,338 +1,364 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <robot name="robot_description">
+    <!-- ==================== LINKS ====================  -->
 
-<material name="red">
-  <color rgba="1.0 0.0 0.0 1.0"/>
-</material>
+    <link name="base_footprint">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+    </link>
 
-<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% LINKS %%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
-  <!-- %%%%%%%%%%%%%%%%%%%%%%% BASE LINK %%%%%%%%%%%%%%%%%%%%%%% -->
+    <joint name="base_link_joint" type="fixed">
+        <origin xyz="0.0 0 0" rpy="0 0 0" />
+        <parent link="base_footprint"/>
+        <child link="base_link" />
+    </joint>
+    
     <link name="base_link">
-      <inertial>
-        <origin
-          xyz="-1.5853E-16 5.2101E-17 -0.015636"
-          rpy="0 0 0" />
-        <mass
-          value="0.36521" />
-        <inertia
-          ixx="0.00039748"
-          ixy="-4.0792E-09"
-          ixz="7.1512E-18"
-          iyy="0.00072454"
-          iyz="-1.3047E-18"
-          izz="0.0010802" />
-      </inertial>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="package://robot_description/meshes/base_link.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.75294 0.75294 0.75294 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="package://robot_description/meshes/base_link.STL" />
-        </geometry>
-      </collision>
+        <inertial>
+            <origin xyz="-0.15898 -3.1398E-05 -0.088736" rpy="0 0 0" />
+            <mass value="1000" /> 
+            <inertia ixx="500" ixy="0.0" ixz="0.0" iyy="600" iyz="0.0" izz="700"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/base_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.52549 0.52549 0.52549 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/base_link.STL" />
+            </geometry>
+        </collision>
     </link>
-  <!-- %%%%%%%%%%%%%%%%%%%%% FR WHEEL LINK %%%%%%%%%%%%%%%%%%%%% -->
-    <link name="fr_wheel_link">
-      <inertial>
-        <origin
-          xyz="1.8041E-16 -0.011571 5.9328E-16"
-          rpy="0 0 0" />
-        <mass
-          value="0.041912" />
-        <inertia
-          ixx="3.6789E-06"
-          ixy="7.9409E-23"
-          ixz="-2.3641E-21"
-          iyy="3.5671E-06"
-          iyz="8.8839E-22"
-          izz="3.6789E-06" />
-      </inertial>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.75294 0.75294 0.75294 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-      </collision>   
+    <link name="plat_link">
+        <inertial>
+            <origin xyz="-2.462E-08 2.0915E-06 0.18068" rpy="0 0 0" />
+            <mass value="0.68186" />
+            <inertia ixx="0.0035943" ixy="3.307E-08" ixz="3.8045E-08" iyy="0.0035945" iyz="3.2205E-08" izz="0.0012003" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/plat_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/plat_link.STL" />
+            </geometry>
+        </collision>
     </link>
-  <!-- %%%%%%%%%%%%%%%%%%%%% FL WHEEL LINK %%%%%%%%%%%%%%%%%%%%% -->
-    <link name="fl_wheel_link">
-      <inertial>
-        <origin
-          xyz="5.4956E-15 0.011595 -7.8063E-16"
-          rpy="0 0 0" />
-        <mass
-          value="0.041912" />
-        <inertia
-          ixx="3.6789E-06"
-          ixy="-1.1316E-21"
-          ixz="9.3084E-21"
-          iyy="3.5669E-06"
-          iyz="-6.9925E-22"
-          izz="3.6789E-06" />
-      </inertial>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.75294 0.75294 0.75294 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-      </collision>
+    <link name="manip_link">
+        <inertial>
+            <origin xyz="0.11099 0.00074874 -0.0029207" rpy="0 0 0" />
+            <mass value="0.58414" />
+            <inertia ixx="0.00057435" ixy="-7.1598E-06" ixz="-3.6918E-06" iyy="0.00051465" iyz="5.3221E-07" izz="0.00088195" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/manip_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.75294 0.75294 0.75294 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/manip_link.STL" />
+            </geometry>
+        </collision>
     </link>
-  <!-- %%%%%%%%%%%%%%%%%%%%% BR WHEEL LINK %%%%%%%%%%%%%%%%%%%%% -->
-    <link name="br_wheel_link">
-      <inertial>
-        <origin
-          xyz="5.7454E-15 -0.011499 -2.8103E-16"
-          rpy="0 0 0" />
-        <mass
-          value="0.041912" />
-        <inertia
-          ixx="3.6789E-06"
-          ixy="-5.9722E-22"
-          ixz="9.4729E-21"
-          iyy="3.5669E-06"
-          iyz="-2.4485E-22"
-          izz="3.6789E-06" />
-      </inertial>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.75294 0.75294 0.75294 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-      </collision>
+    <link name="garra1_link">
+        <inertial>
+            <origin xyz="-0.0029178 0.037374 0.019443" rpy="0 0 0" />
+            <mass value="0.026601" />
+            <inertia ixx="8.5861E-06" ixy="-1.0617E-06" ixz="-1.5442E-06" iyy="8.7566E-06" iyz="-1.5554E-06" izz="5.7107E-06" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/garra1_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/garra1_link.STL" />
+            </geometry>
+        </collision>
     </link>
-  <!-- %%%%%%%%%%%%%%%%%%%%% BL WHEEL LINK %%%%%%%%%%%%%%%%%%%%% -->
-    <link name="bl_wheel_link">
-      <inertial>
-        <origin
-          xyz="1.1102E-16 0.011429 -1.6653E-16"
-          rpy="0 0 0" />
-        <mass
-          value="0.041912" />
-        <inertia
-          ixx="3.6789E-06"
-          ixy="-1.5032E-22"
-          ixz="-2.9973E-21"
-          iyy="3.5671E-06"
-          iyz="1.1701E-21"
-          izz="3.6789E-06" />
-      </inertial>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.75294 0.75294 0.75294 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="1.5708 0 0" />
-        <geometry>
-          <cylinder radius="0.048" length="0.02" />
-        </geometry>
-      </collision>
+    <link name="garra2_link">
+        <inertial>
+            <origin xyz="0.0029178 -0.037579 0.019443" rpy="0 0 0" />
+            <mass value="0.026601" />
+            <inertia ixx="8.5861E-06" ixy="-1.0617E-06" ixz="1.5442E-06" iyy="8.7566E-06" iyz="1.5554E-06" izz="5.7107E-06" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/garra2_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://robot_description/meshes/garra2_link.STL" />
+            </geometry>
+        </collision>
     </link>
 
-<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% JOINTS %%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
-  <!-- %%%%%%%%%%%%%%%%%%%% FR WHEEL JOINT %%%%%%%%%%%%%%%%%%%% -->
-    <joint name="fr_wheel_joint"
-      type="fixed">
-      <origin
-        xyz="0.10615 -0.085325 -0.0303"
-        rpy="0 0 0" />
-      <parent
-        link="base_link" />
-      <child
-        link="fr_wheel_link" />
-      <axis
-        xyz="0 1 0" />
+    <link name="camera_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5708 0" />
+            <geometry>
+                <box size="0.04 0.07 0.03" />
+            </geometry>
+            <material name="grey">
+                <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+        </visual>
+    </link>
+
+    <link name="depth_camera_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0.2 0" />
+            <geometry>
+                <box size="0.02 0.07 0.014" />
+            </geometry>
+            <material name="grey">
+                <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+        </visual>
+    </link>
+    
+    <!-- ==================== JOINTS ====================  -->
+    <joint name="plat_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="plat_link" />
+        <axis xyz="0 0 1" />
+        <limit lower="-3.490666" upper="3.490666" effort="300" velocity="1.0472" />
     </joint>
-  <!-- %%%%%%%%%%%%%%%%%%%%% FL WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
-    <joint name="fl_wheel_joint"
-      type="fixed">
-      <origin
-        xyz="0.10615 0.085325 -0.0303"
-        rpy="0 0 0" />
-      <parent
-        link="base_link" />
-      <child
-        link="fl_wheel_link" />
-      <axis
-        xyz="0 1 0" />
+    <joint name="manip_joint" type="prismatic">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="plat_link" />
+        <child link="manip_link" />
+        <axis xyz="0 0 1" />
+        <limit lower="0" upper="0.38" effort="300" velocity="0.05" />
     </joint>
-  <!-- %%%%%%%%%%%%%%%%%%%%% BR WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
-    <joint name="br_wheel_joint"
-      type="fixed">
-      <origin
-        xyz="-0.10615 -0.085325 -0.0303"
-        rpy="0 0 0" />
-      <parent
-        link="base_link" />
-      <child
-        link="br_wheel_link" />
-      <axis
-        xyz="0 1 0" />
+    <joint name="garra1_joint" type="prismatic">
+        <origin xyz="0.28556 0 -0.0662" rpy="3.1416 0 0" />
+        <parent link="manip_link" />
+        <child link="garra1_link" />
+        <axis xyz="0 1 0" />
+        <limit lower="-0.025" upper="0" effort="100" velocity="0.025" />
     </joint>
-  <!-- %%%%%%%%%%%%%%%%%%%%% BR WHEEL JOINT %%%%%%%%%%%%%%%%%%%%% -->
-    <joint name="bl_wheel_joint"
-      type="fixed">
-      <origin
-        xyz="-0.10615 0.085325 -0.0303"
-        rpy="0 0 0" />
-      <parent
-        link="base_link" />
-      <child
-        link="bl_wheel_link" />
-      <axis
-        xyz="0 1 0" />
+    <joint name="garra2_joint" type="prismatic">
+        <origin xyz="0.28556 0 -0.0662" rpy="3.1416 0 0" />
+        <parent link="manip_link" />
+        <child link="garra2_link" />
+        <axis xyz="0 1 0" />
+        <limit lower="0" upper="0.025" effort="100" velocity="0.025" />
+    </joint>
+    <joint name="depth_camera_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="depth_camera_link" />
+        <origin xyz="0.083 0 -0.09" rpy="0 0.2 0" />
+    </joint>
+    <joint name="camera_joint" type="fixed">
+        <parent link="manip_link" />
+        <child link="camera_link" />
+        <origin xyz="0.33 0 -0.065" rpy="0 1.5708 0" />
     </joint>
 
-    <joint name="laser_joint"
-      type="fixed">
-      <origin
-        xyz="0.14 0 0.001"
-        rpy="0 0 0" />
-      <parent
-        link="base_link" />
-      <child
-        link="laser_frame" />
-    </joint>
+    <gazebo reference="depth_camera_link">
+        <sensor type="depth" name="depth_camera_sensor">
+            <update_rate>30.0</update_rate>
+            <camera>
+                <horizontal_fov>1.047</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>5.0</far>
+                </clip>
+                <depth_camera>
+                    <output>
+                        <format>R32F</format>
+                    </output>
+                </depth_camera>
+            </camera>
+            <plugin name="depth_camera_controller" filename="libgazebo_ros_depth_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>30.0</updateRate>
+                <cameraName>depth_camera</cameraName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <frameName>depth_camera_link</frameName>
+                <hackBaseline>0.07</hackBaseline>
+            </plugin>
+        </sensor>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
 
-    <link name="laser_frame">
-      <visual>
-        <geometry>
-          <cylinder radius="0.02" length="0.02"/>
-        </geometry>
-        <material name="red">
-          
-        </material>
-      </visual>
+    <gazebo reference="camera_link">
+        <sensor type="camera" name="camera_sensor">
+            <update_rate>30.0</update_rate>
+            <camera>
+                <horizontal_fov>1.5</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>50</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>30.0</updateRate>
+                <cameraName>camera</cameraName>
+                <imageTopicName>camera/image_raw</imageTopicName>
+                <cameraInfoTopicName>camera/camera_info</cameraInfoTopicName>
+                <frameName>camera_link</frameName>
+            </plugin>
+        </sensor>
+    </gazebo>
 
-      <collision>
-        <geometry>
-          <cylinder radius="0.02" length="0.02"/>
-        </geometry>
-      </collision>
+    <gazebo>
+    <plugin name="auto_grab_plugin" filename="$(find robot_arm_control)/plugin/auto_grab_plugin.so">
+        <!-- Parâmetros adicionais, se necessário -->
+    </plugin>
+    </gazebo>
 
-      <inertial>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <mass
-          value="0.01" />
-        <inertia
-          ixx="3.6789E-06"
-          ixy="-1.5032E-22"
-          ixz="-2.9973E-21"
-          iyy="3.5671E-06"
-          iyz="1.1701E-21"
-          izz="3.6789E-06" />
-      </inertial>
-    </link>
+    <transmission name="trans_plat_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="plat_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="plat_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_manip_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="manip_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="manip_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_garra1_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="garra1_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="garra1_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_garra2_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="garra2_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="garra2_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
 
-  <gazebo reference="laser_frame">
-    <material>Gazebo/Red</material>
+    <gazebo>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryTopic>odom</odometryTopic>
+        <odometryFrame>odom</odometryFrame>
+        <odometryRate>20.0</odometryRate>
+        <robotBaseFrame>base_footprint</robotBaseFrame>
+        </plugin>
+  </gazebo>
 
-    <sensor name="laser" type="ray">
-        <pose> 0 0 0 0 0 0 </pose>
-        <visualize>false</visualize>
-        <update_rate>10</update_rate>
-        <ray>
-            <scan>
-                <horizontal>
-                    <samples>360</samples>
-                    <min_angle>-3.14</min_angle>
-                    <max_angle>3.14</max_angle>
-                </horizontal>
-            </scan>
-            <range>
-                <min>0.3</min>
-                <max>12</max>
-            </range>
-        </ray>
-        <plugin name="laser_controller" filename="libgazebo_ros_laser.so">
-            <topicName>/scan</topicName>
-            <frameName>laser_frame</frameName>
+    <!-- Link ao qual o sensor será acoplado -->
+  <link name="sensor_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Joint para conectar o sensor ao robô -->
+  <joint name="sensor_joint" type="fixed">
+    <parent link="base_link"/> <!-- Link ao qual o sensor está conectado -->
+    <child link="sensor_link"/>
+    <origin xyz="0.1 0 0.2" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Plugin do Gazebo para o sensor ultrassônico -->
+  <gazebo>
+    <sensor type="ray" name="ultrasonic_sensor">
+      <pose>0 0 0 0 0 0</pose> <!-- Posição do sensor relativa ao link -->
+      <update_rate>10</update_rate> <!-- Taxa de atualização do sensor -->
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>1</samples> <!-- Quantidade de amostras -->
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>0.0</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min> <!-- Distância mínima detectada -->
+          <max>4.0</max> <!-- Distância máxima detectada -->
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+        <plugin name="gazebo_ros_range" filename="libgazebo_ros_range.so">
+        <ros>
+            <namespace>/robot_description</namespace>
+            <remapping>~/range:=/ultrasonic</remapping> <!-- Mapeia o tópico correto -->
+        </ros>
+        <frameName>sensor_link</frameName>
         </plugin>
     </sensor>
   </gazebo>
-
-  <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>100.0</odometryRate>
-      <robotBaseFrame>base_link</robotBaseFrame>
-      <publishTF>true</publishTF>
-    </plugin>
-  </gazebo>
-
 </robot>
+

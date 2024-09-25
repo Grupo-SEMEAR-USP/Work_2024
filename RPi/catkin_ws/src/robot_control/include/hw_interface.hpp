@@ -59,7 +59,7 @@ private:
     float wheel_radius; // Raio das rodas
     float base_geometry; // Geometria da base
     float wheel_separation_width;
-    float wheel_separation_lenght;
+    float wheel_separation_length;
     float deceleration_rate; // Taxa de desaceleração
     float max_speed; // Velocidade máxima
     float min_speed; // Velocidade mínima

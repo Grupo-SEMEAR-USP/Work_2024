@@ -1,0 +1,32 @@
+arm_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - plat_joint
+    - manip_joint
+  gains:
+    plat_joint:
+      p: 10000
+      d: 1
+      i: 1
+      i_clamp: 1
+    manip_joint:
+      p: 10000
+      d: 1
+      i: 1
+      i_clamp: 1
+gripper_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - garra1_joint
+    - garra2_joint
+  gains:
+    garra1_joint:
+      p: 1000
+      d: 1
+      i: 1
+      i_clamp: 1
+    garra2_joint:
+      p: 1000
+      d: 1
+      i: 1
+      i_clamp: 1

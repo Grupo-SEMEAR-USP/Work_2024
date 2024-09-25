@@ -1,47 +1,17 @@
 <launch>
-  <arg name="world" default="$(find robot_description)/worlds/map_teste.world"/>
-  <arg name="map_name" default="map.yaml"/>
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find robot_description)/maps/$(arg map_name)" respawn="true" />
-
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(arg world)"/> <!-- Correção aqui -->
-  </include>
-
+  <include
+    file="$(find gazebo_ros)/launch/empty_world.launch" />
   <node
     name="tf_footprint_base"
     pkg="tf"
     type="static_transform_publisher"
     args="0 0 0 0 0 0 base_link base_footprint 40" />
-
-  <!-- SLAM -->
-  <!-- <node pkg="gmapping" type="slam_gmapping" name="gmapping">
-      <param name="base_frame"            value="base_link"/>
-      <param name="odom_frame"            value="odom" />
-      <param name="map_update_interval"   value="3.0"/>
-      <param name="maxUrange"             value="15.0"/>
-  </node> -->
-
-  <node pkg="amcl" type="amcl" name="amcl" output="screen">
-    <param name="odom_frame_id" value="odom"/>
-    <param name="odom_model_type" value="diff-corrected"/>
-    <param name="base_frame_id" value="base_link"/>
-    <param name="update_min_d" value="0.1"/>
-    <param name="update_min_a" value="0.2"/>
-    <param name="min_particles" value="100"/>
-    <param name="global_frame_id" value="map"/>
-    <param name="tf_broadcast" value="true" />
-    <param name="initial_pose_x" value="-3.3152"/>
-    <param name="initial_pose_y" value="-3.447043"/>
-    <param name="initial_pose_a" value="1.57"/>
-  </node>
-
   <node
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-file $(find robot_description)/urdf/robot_description.urdf -urdf -model robot_description -x -3.3152 -y -3.447043 -z 0 -R 0 -P 0 -Y 1.57"
+    args="-file $(find robot_description)/urdf/robot_description.urdf -urdf -model robot_description"
     output="screen" />
-
   <node
     name="fake_joint_calibration"
     pkg="rostopic"

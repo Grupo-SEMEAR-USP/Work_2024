@@ -4,22 +4,17 @@
   <param
     name="robot_description"
     textfile="$(find robot_description)/urdf/robot_description.urdf" />
-
-  <!-- robot state publisher -->
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-    <param name="publish_frequency" value="100.0"/>
-    <param name="use_gui" value="true"/>
-  </node>
-
-  <!-- joint state publisher -->
-  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
-    <param name="rate" value="100.0"/>
-    <param name="use_gui" value="true"/>
-  </node>
-
+  <node
+    name="joint_state_publisher_gui"
+    pkg="joint_state_publisher_gui"
+    type="joint_state_publisher_gui" />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher" />
   <node
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find robot_description)/config/rviz.rviz"/>
+    args="-d $(find robot_description)/urdf.rviz" />
 </launch>

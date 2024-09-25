@@ -1,4 +1,4 @@
-i#ifndef __I2CSLAVE__
+#ifndef __I2CSLAVE__
 #define __I2CSLAVE__
 
 /**
@@ -25,6 +25,15 @@ i#ifndef __I2CSLAVE__
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+// Testes:
+
+// Testando com 250 ms de time_out, 2.7k ohm de resistência, freq_com de 58 ms, com pullup interno e 10Hz no ROS [OK -> 24 min]
+// Testanto com 100 ms de time_out, 3.7k ohm de resistencia, freq_com de 58 ms, com pullup interno e 10Hz no ROS [OK -> 21 min]
+// Testanto com 100 ms de time_out, 3.7k ohm de resistencia, freq_com de 58 ms, sem pullup interno e 10Hz no ROS [OK -> 22 min]
+// Testanto com 10 ms de time_out, 3.7k ohm de resistencia, freq_com de 58 ms, sem pullup interno e 20Hz no ROS [OK -> 21 min]
+// Testanto com 10 ms de time_out, 3.7k ohm de resistencia, freq_com de 20 ms, sem pullup interno e 20Hz no ROS [OK -> 21 min]
+// Testanto com 10 ms de time_out, 3.7k ohm de resistencia, freq_com de 20 ms, sem pullup interno, 20Hz no ROS e clk_flags 0 [OK -> 1:30h]
+
 // Definition of I2C bus parameters
 #define I2C_SLAVE_NUM I2C_NUM_0
 #define I2C_SLAVE_SCL_IO 22 // ESP32 SLC Pin
@@ -36,14 +45,13 @@ i#ifndef __I2CSLAVE__
 // Definition of values used in read and write
 #define WRITE_LEN_VALUE 8
 #define READ_LEN_VALUE 10
-#define TIMEOUT_MS 250
+#define TIMEOUT_MS 10
 
 // Definition of values for packing and unpacking
 #define LAST_BYTE_MASK 0xFF
 
 // Definition of frequencies used within tasks
-#define FREQ_COMMUNICATION 58
-#define FREQ_CONTROL 2000
+#define FREQ_COMMUNICATION 20
 
 extern QueueHandle_t i2c_write_queue; 
 extern const char *TAG; // TAG used for console display
