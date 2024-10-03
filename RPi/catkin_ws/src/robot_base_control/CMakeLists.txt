@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(robot_control)
+project(robot_base_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -135,7 +135,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${robot_control_INCLUDE_DIRS}
+  ${robot_base_control_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -190,8 +190,8 @@ target_link_libraries(hw_interface
 
 catkin_install_python(PROGRAMS
   scripts/i2c_master.py
-  scripts/aruco_identification.py
-  scripts/teste_camera.py
+  scripts/align_block.py
+  scripts/teste.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

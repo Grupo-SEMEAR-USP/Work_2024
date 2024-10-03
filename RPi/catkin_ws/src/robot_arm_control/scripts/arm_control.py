@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import String  # Tipo de mensagem que será recebida
 import moveit_commander
 import sys
+from robot_arm_control.srv import ControlArm, ControlArmResponse  
 
 # Função que controla o grupo especificado (gripper ou braço)
 def controlar_parte(parte, acao):
@@ -17,34 +17,40 @@ def controlar_parte(parte, acao):
         # Executa o movimento
         move_group.go(wait=True)
         rospy.loginfo("%s movido para a posição: %s", parte, acao)
+        return True, f"{parte} movido para a posição: {acao}"
     else:
         rospy.logwarn("Ação ou posição nomeada inválida para %s: %s", parte, acao)
+        return False, f"Ação ou posição nomeada inválida para {parte}: {acao}"
 
-# Função de callback para processar as mensagens
-def callback_function(data):
-    rospy.loginfo("Mensagem recebida: %s", data.data)
+# Função de callback para o serviço
+def handle_control_arm(req):
+    rospy.loginfo("Comando recebido: %s", req.command)
 
     # Divide a mensagem em duas partes: o grupo (parte) e a ação
     try:
-        parte, acao = data.data.split(":")
-        controlar_parte(parte, acao)
+        parte, acao = req.command.split(":")
+        sucesso, mensagem = controlar_parte(parte, acao)
+        return ControlArmResponse(success=sucesso, message=mensagem)
     except ValueError:
         rospy.logwarn("Formato da mensagem incorreto. Use 'parte:acao'.")
+        return ControlArmResponse(success=False, message="Formato incorreto. Use 'parte:acao'.")
 
-# Inicializa o nó ROS e o subscriber
-def listener():
+# Inicializa o nó ROS e o serviço
+def control_arm_service():
     # Inicializa o moveit_commander e o ROS node
     moveit_commander.roscpp_initialize(sys.argv)
-    rospy.init_node('controle_geral_node', anonymous=True)
+    rospy.init_node('control_arm_service_node')
 
-    # Subscrição ao tópico 'controle_geral'. O tipo de mensagem é std_msgs/String
-    rospy.Subscriber("controle_geral", String, callback_function)
+    # Cria o serviço ROS que recebe comandos no formato 'parte:ação'
+    service = rospy.Service('control_arm_service', ControlArm, handle_control_arm)
+
+    rospy.loginfo("Serviço 'control_arm_service' disponível e aguardando comandos")
 
     # Mantém o script rodando até que o nó seja encerrado
     rospy.spin()
 
 if __name__ == '__main__':
     try:
-        listener()
+        control_arm_service()
     except rospy.ROSInterruptException:
         pass

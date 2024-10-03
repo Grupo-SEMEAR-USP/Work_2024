@@ -249,7 +249,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>1.01514 -0.338135 0 0 -0 0</pose>
+      <pose>1.01514 -0.083308 0 0 -0 0</pose>
     </model>
     <model name='aruco_model_2'>
       <static>0</static>
@@ -345,7 +345,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.501767 0.067219 0 0 -0 0</pose>
+      <pose>0.501767 -0.083308 0 0 -0 0</pose>
     </model>
     <model name='aruco_model_4'>
       <static>0</static>
@@ -393,7 +393,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>1.32232 -0.02871 0 0 -0 0</pose>
+      <pose>1.32232 -0.083308 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
       <sim_time>233 547000000</sim_time>
@@ -401,40 +401,40 @@
       <wall_time>1725724990 798120579</wall_time>
       <iterations>44818</iterations>
       <model name='aruco_model_1'>
-        <pose>1.20188 -0.316749 0.171001 1.4e-05 -2.8e-05 -0.000137</pose>
+        <pose>0.92 0.15 0.171001 1.4e-05 -2.8e-05 -0.000137</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>1.20188 -0.316749 0.171001 1.4e-05 -2.8e-05 -0.000137</pose>
+          <pose>0.92 0.15 0.171001 1.4e-05 -2.8e-05 -0.000137</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0.004317 0.004316 -0.008632 -0.205497 0.20555 -0</acceleration>
           <wrench>0.004317 0.004316 -0.008632 0 -0 0</wrench>
         </link>
       </model>
       <model name='aruco_model_2'>
-        <pose>0.879165 0.109399 0.171001 -1.8e-05 2.6e-05 0.001395</pose>
+        <pose>0.92 0.05 0.171001 -1.8e-05 2.6e-05 0.001395</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>0.879165 0.109399 0.171001 -1.8e-05 2.6e-05 0.001395</pose>
+          <pose>0.92 0.05 0.171001 -1.8e-05 2.6e-05 0.001395</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>-0.00431 -0.004322 -0.008632 0.20581 -0.205236 0</acceleration>
           <wrench>-0.00431 -0.004322 -0.008632 0 -0 0</wrench>
         </link>
       </model>
       <model name='aruco_model_3'>
-        <pose>0.9429 -0.334049 0.171001 2.3e-05 -1e-05 2.7e-05</pose>
+        <pose>0.92 -0.05 0.171001 2.3e-05 -1e-05 2.7e-05</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>0.9429 -0.334049 0.171001 2.3e-05 -1e-05 2.7e-05</pose>
+          <pose>0.92 -0.05 0.171001 2.3e-05 -1e-05 2.7e-05</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0.004316 0.004316 -0.008632 -0.205529 0.205521 0</acceleration>
           <wrench>0.004316 0.004316 -0.008632 0 -0 0</wrench>
         </link>
       </model>
       <model name='aruco_model_4'>
-        <pose>1.03601 -0.335341 0.171 8e-06 7e-06 -2e-06</pose>
+        <pose>0.92 -0.15 0.171 8e-06 7e-06 -2e-06</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>1.03601 -0.335341 0.171 8e-06 7e-06 -2e-06</pose>
+          <pose>0.92 -0.15 0.171 8e-06 7e-06 -2e-06</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>-0.004316 0.004316 -0.008632 -0.205526 -0.205526 0</acceleration>
           <wrench>-0.004316 0.004316 -0.008632 0 -0 0</wrench>

@@ -5,7 +5,7 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle& nh) : nh(nh), command_timeou
     cmd_vel_sub = nh.subscribe("cmd_vel", 10, &RobotHWInterface::cmdVelCallback, this);
 
     // Publicador para o comando de velocidade das rodas
-    velocity_command_pub = nh.advertise<robot_control::velocity_data>("velocity_command", 10);
+    velocity_command_pub = nh.advertise<robot_base_control::velocity_data>("velocity_command", 10);
 
     encoder_sub = nh.subscribe("/encoder_data", 10, &RobotHWInterface::encoderCallback, this);
     odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 50);
@@ -79,7 +79,7 @@ float RobotHWInterface::mapSpeed(float v_input) {
 }
 
 void RobotHWInterface::publishWheelSpeeds() {
-    robot_control::velocity_data msg;
+    robot_base_control::velocity_data msg;
 
     msg.front_left_wheel = front_left_wheel_speed;
     msg.front_right_wheel = front_right_wheel_speed;
@@ -115,7 +115,7 @@ void RobotHWInterface::updateWheelSpeedForDeceleration() {
     }
 }
 
-void RobotHWInterface::encoderCallback(const robot_control::encoder_data::ConstPtr& msg) {
+void RobotHWInterface::encoderCallback(const robot_base_control::encoder_data::ConstPtr& msg) {
 
     current_time = ros::Time::now();
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot name="robot_description">
     <!-- ==================== LINKS ====================  -->
-
     <link name="base_footprint">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -10,18 +9,16 @@
             </geometry>
         </visual>
     </link>
-
     <joint name="base_link_joint" type="fixed">
         <origin xyz="0.0 0 0" rpy="0 0 0" />
-        <parent link="base_footprint"/>
+        <parent link="base_footprint" />
         <child link="base_link" />
     </joint>
-    
     <link name="base_link">
         <inertial>
             <origin xyz="-0.15898 -3.1398E-05 -0.088736" rpy="0 0 0" />
-            <mass value="1000" /> 
-            <inertia ixx="500" ixy="0.0" ixz="0.0" iyy="600" iyz="0.0" izz="700"/>
+            <mass value="1000" />
+            <inertia ixx="500" ixy="0.0" ixz="0.0" iyy="600" iyz="0.0" izz="700" />
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -127,7 +124,6 @@
             </geometry>
         </collision>
     </link>
-
     <link name="camera_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 1.5708 0" />
@@ -144,8 +140,12 @@
                 <box size="0.04 0.07 0.03" />
             </geometry>
         </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
     </link>
-
     <link name="depth_camera_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0.2 0" />
@@ -162,8 +162,12 @@
                 <box size="0.02 0.07 0.014" />
             </geometry>
         </collision>
+        <inertial>
+            <mass value="0.1" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
     </link>
-    
     <!-- ==================== JOINTS ====================  -->
     <joint name="plat_joint" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -203,7 +207,6 @@
         <child link="camera_link" />
         <origin xyz="0.33 0 -0.065" rpy="0 1.5708 0" />
     </joint>
-
     <gazebo reference="depth_camera_link">
         <sensor type="depth" name="depth_camera_sensor">
             <update_rate>30.0</update_rate>
@@ -238,7 +241,6 @@
             <robotNamespace>/</robotNamespace>
         </plugin>
     </gazebo>
-
     <gazebo reference="camera_link">
         <sensor type="camera" name="camera_sensor">
             <update_rate>30.0</update_rate>
@@ -264,13 +266,11 @@
             </plugin>
         </sensor>
     </gazebo>
-
     <gazebo>
-    <plugin name="auto_grab_plugin" filename="$(find robot_arm_control)/plugin/auto_grab_plugin.so">
-        <!-- Parâmetros adicionais, se necessário -->
-    </plugin>
+        <plugin name="auto_grab_plugin" filename="$(find robot_arm_control)/plugin/auto_grab_plugin.so">
+            <!-- Parâmetros adicionais, se necessário -->
+        </plugin>
     </gazebo>
-
     <transmission name="trans_plat_joint">
         <type>transmission_interface/SimpleTransmission</type>
         <joint name="plat_joint">
@@ -316,29 +316,26 @@
             <robotNamespace>/</robotNamespace>
         </plugin>
     </gazebo>
-
     <gazebo>
         <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-        <commandTopic>cmd_vel</commandTopic>
-        <odometryTopic>odom</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <odometryRate>20.0</odometryRate>
-        <robotBaseFrame>base_footprint</robotBaseFrame>
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <odometryRate>20.0</odometryRate>
+            <robotBaseFrame>base_footprint</robotBaseFrame>
         </plugin>
-  </gazebo>
-
-
+    </gazebo>
     <!-- Link do sensor ultrassônico -->
     <link name="sensor_ir_link">
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="0.1"/>
-            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1" />
+            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001" />
         </inertial>
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-            <box size="0.02 0.05 0.02"/>
+                <box size="0.02 0.05 0.02" />
             </geometry>
         </visual>
         <collision>
@@ -348,17 +345,17 @@
             </geometry>
         </collision>
     </link>
-  <!-- Link do sensor ultrassônico -->
+    <!-- Link do sensor ultrassônico -->
     <link name="sensor_ir_link2">
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="0.1"/>
-            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1" />
+            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001" />
         </inertial>
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-            <box size="0.02 0.05 0.02"/>
+                <box size="0.02 0.05 0.02" />
             </geometry>
         </visual>
         <collision>
@@ -371,14 +368,14 @@
     <!-- Link do sensor ultrassônico -->
     <link name="sensor_ir_link3">
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="0.1"/>
-            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1" />
+            <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001" />
         </inertial>
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-            <box size="0.02 0.05 0.02"/>
+                <box size="0.02 0.05 0.02" />
             </geometry>
         </visual>
         <collision>
@@ -388,149 +385,145 @@
             </geometry>
         </collision>
     </link>
-
     <!-- Joint do sensor conectada ao robô -->
     <joint name="sensor_ir_joint" type="revolute">
-        <parent link="base_link"/>
-        <child link="sensor_ir_link"/>
-        <origin xyz="-0.34 0 -0.11" rpy="0 0 3.14159"/> <!-- Posição da joint no robô -->
-        <axis xyz="0 0 1"/>
-        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+        <parent link="base_link" />
+        <child link="sensor_ir_link" />
+        <origin xyz="-0.34 0 -0.11" rpy="0 0 3.14159" />
+        <!-- Posição da joint no robô -->
+        <axis xyz="0 0 1" />
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0" />
     </joint>
-
     <!-- Joint do sensor conectada ao robô -->
     <joint name="sensor_ir_joint2" type="revolute">
-        <parent link="base_link"/>
-        <child link="sensor_ir_link2"/>
-        <origin xyz="-0.17 0.145 -0.11" rpy="0 0 1.5708"/> <!-- Posição da joint no robô -->
-        <axis xyz="0 0 1"/>
-        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+        <parent link="base_link" />
+        <child link="sensor_ir_link2" />
+        <origin xyz="-0.17 0.145 -0.11" rpy="0 0 1.5708" />
+        <!-- Posição da joint no robô -->
+        <axis xyz="0 0 1" />
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0" />
     </joint>
-
     <!-- Joint do sensor conectada ao robô -->
     <joint name="sensor_ir_joint3" type="revolute">
-        <parent link="base_link"/>
-        <child link="sensor_ir_link3"/>
-        <origin xyz="-0.17 -0.145 -0.11" rpy="0 0 -1.5708"/> <!-- Posição da joint no robô -->
-        <axis xyz="0 0 1"/>
-        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+        <parent link="base_link" />
+        <child link="sensor_ir_link3" />
+        <origin xyz="-0.17 -0.145 -0.11" rpy="0 0 -1.5708" />
+        <!-- Posição da joint no robô -->
+        <axis xyz="0 0 1" />
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0" />
     </joint>
-
     <!-- Adicionar o sensor no link associado à joint -->
     <gazebo reference="sensor_ir_link">
-    <sensor type="ray" name="TeraRanger2">
-        <pose>0 0 0 0 0 0</pose>
-        <visualize>true</visualize>
-        <update_rate>50</update_rate>
-        <ray>
-        <scan>
-            <horizontal>
-            <samples>10</samples>
-            <resolution>1</resolution> 
-            <min_angle>-0.14835</min_angle>
-            <max_angle>0.14835</max_angle>
-            </horizontal>
-            <vertical>
-            <samples>10</samples>
-            <resolution>1</resolution> 
-            <min_angle>-0.14835</min_angle>
-            <max_angle>0.14835</max_angle> 
-            </vertical>
-        </scan>
-        <range>
-            <min>0.01</min>
-            <max>0.5</max>
-            <resolution>0.02</resolution>
-        </range>
-        </ray>
-        <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-        <gaussianNoise>0.005</gaussianNoise>
-        <alwaysOn>true</alwaysOn>
-        <updateRate>50</updateRate>
-        <topicName>sensor/ir_back</topicName>
-        <frameName>sensor_ir_link</frameName>
-        <radiation>INFRARED</radiation>
-        <fov>0.2967</fov>
-        </plugin>
-    </sensor>
+        <sensor type="ray" name="TeraRanger2">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+            <update_rate>50</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.5</max>
+                    <resolution>0.02</resolution>
+                </range>
+            </ray>
+            <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>50</updateRate>
+                <topicName>sensor/ir_back</topicName>
+                <frameName>sensor_ir_link</frameName>
+                <radiation>INFRARED</radiation>
+                <fov>0.2967</fov>
+            </plugin>
+        </sensor>
     </gazebo>
-
     <gazebo reference="sensor_ir_link2">
         <sensor type="ray" name="TeraRanger2">
             <pose>0 0 0 0 0 0</pose>
             <visualize>true</visualize>
             <update_rate>50</update_rate>
             <ray>
-            <scan>
-                <horizontal>
-                <samples>10</samples>
-                <resolution>1</resolution> 
-                <min_angle>-0.14835</min_angle>
-                <max_angle>0.14835</max_angle>
-                </horizontal>
-                <vertical>
-                <samples>10</samples>
-                <resolution>1</resolution> 
-                <min_angle>-0.14835</min_angle>
-                <max_angle>0.14835</max_angle> 
-                </vertical>
-            </scan>
-            <range>
-                <min>0.01</min>
-                <max>0.5</max>
-                <resolution>0.02</resolution>
-            </range>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.5</max>
+                    <resolution>0.02</resolution>
+                </range>
             </ray>
             <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-            <gaussianNoise>0.005</gaussianNoise>
-            <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>sensor/ir_left</topicName>
-            <frameName>sensor_ir_link2</frameName>
-            <radiation>INFRARED</radiation>
-            <fov>0.2967</fov>
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>50</updateRate>
+                <topicName>sensor/ir_left</topicName>
+                <frameName>sensor_ir_link2</frameName>
+                <radiation>INFRARED</radiation>
+                <fov>0.2967</fov>
             </plugin>
         </sensor>
     </gazebo>
-
     <gazebo reference="sensor_ir_link3">
         <sensor type="ray" name="TeraRanger2">
             <pose>0 0 0 0 0 0</pose>
             <visualize>true</visualize>
             <update_rate>50</update_rate>
             <ray>
-            <scan>
-                <horizontal>
-                <samples>10</samples>
-                <resolution>1</resolution> 
-                <min_angle>-0.14835</min_angle>
-                <max_angle>0.14835</max_angle>
-                </horizontal>
-                <vertical>
-                <samples>10</samples>
-                <resolution>1</resolution> 
-                <min_angle>-0.14835</min_angle>
-                <max_angle>0.14835</max_angle> 
-                </vertical>
-            </scan>
-            <range>
-                <min>0.01</min>
-                <max>0.5</max>
-                <resolution>0.02</resolution>
-            </range>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.14835</min_angle>
+                        <max_angle>0.14835</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.5</max>
+                    <resolution>0.02</resolution>
+                </range>
             </ray>
             <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
-            <gaussianNoise>0.005</gaussianNoise>
-            <alwaysOn>true</alwaysOn>
-            <updateRate>50</updateRate>
-            <topicName>sensor/ir_right</topicName>
-            <frameName>sensor_ir_link3</frameName>
-            <radiation>INFRARED</radiation>
-            <fov>0.2967</fov>
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>50</updateRate>
+                <topicName>sensor/ir_right</topicName>
+                <frameName>sensor_ir_link3</frameName>
+                <radiation>INFRARED</radiation>
+                <fov>0.2967</fov>
             </plugin>
         </sensor>
     </gazebo>
-
     <gazebo reference="garra1_link">
         <mu1>1000</mu1>
         <mu2>1000</mu2>
@@ -546,9 +539,7 @@
                 <slip>0</slip>
             </ode>
         </torsional>
-
     </gazebo>
-
     <gazebo reference="garra2_link">
         <mu1>1000</mu1>
         <mu2>1000</mu2>
@@ -565,5 +556,35 @@
             </ode>
         </torsional>
     </gazebo>
+    <transmission name="trans_sensor_ir_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="sensor_ir_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="sensor_ir_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_sensor_ir_joint2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="sensor_ir_joint2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="sensor_ir_joint2_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_sensor_ir_joint3">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="sensor_ir_joint3">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="sensor_ir_joint3_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 </robot>
 

@@ -3,11 +3,11 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include "robot_control/velocity_data.h"
+#include "robot_base_control/velocity_data.h"
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Point.h>
-#include "robot_control/encoder_data.h" 
+#include "robot_base_control/encoder_data.h" 
 #include <tf/transform_broadcaster.h>
 #include <tf/tf.h>
 #include <cmath>
@@ -24,7 +24,7 @@ public:
     void commandTimeoutCallback(const ros::TimerEvent&); // Callback para o timeout
     void updateWheelSpeedForDeceleration(); // Desaceleração
     float mapSpeed(float v_input); // Normalização da velocidade
-    void encoderCallback(const robot_control::encoder_data::ConstPtr& msg); // Callback para os dados do encoder
+    void encoderCallback(const robot_base_control::encoder_data::ConstPtr& msg); // Callback para os dados do encoder
     void updateOdometry();
 
     int teste = 0;
