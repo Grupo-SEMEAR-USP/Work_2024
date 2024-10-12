@@ -1,0 +1,14 @@
+<launch>
+  <!-- Inicializa a detecção das AprilTags -->
+  <include file="$(find apriltag_ros)/launch/continuous_detection.launch"/>
+
+  <!-- Inicializa o controle do robô (Hardware interface)-->
+  <include file="$(find robot_base_control)/launch/hw_interface.launch"/>
+
+  <!-- Inicializa a câmera do robô -->
+
+
+  <!-- Inicializa o braço do robô -->
+  <include file="$(find robot_arm_control)/launch/arm_control.launch"/>
+  
+</launch>

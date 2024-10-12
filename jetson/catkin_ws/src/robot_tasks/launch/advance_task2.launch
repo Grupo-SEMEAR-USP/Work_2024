@@ -1,0 +1,10 @@
+<launch>
+  <!-- Inicia os launchs gerais -->
+  <include file="$(find robot_tasks)/launch/general.launch"/>
+
+  <!-- Inicia o controle do robô -->
+  <node name="align_block" pkg="robot_block_finder" type="align_block.py" />
+
+  <!-- Inicia o scheduler da Advanced Task 2 -->
+  
+</launch>

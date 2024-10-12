@@ -1,0 +1,5 @@
+<launch>
+  <node name="servo_control_node" pkg="robot_arm_control" type="arm_hw_interface.py" output="screen"/>
+  <node name="pose_transition_node" pkg="robot_arm_control" type="pose_transition_node.py"/>
+  <rosparam file="$(find robot_arm_control)/config/arm_poses.yaml" command="load"/>
+</launch>
