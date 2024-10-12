@@ -34,7 +34,7 @@ This repository contains the code developed by the Autonomous Robotics Nucleus (
   </li>
   <li>
     <strong>Clone the Project Repository</strong>: Clone this repository into your <code>catkin_ws/src</code> folder:
-    <pre><code>cd ~/catkin_ws/src
+    <pre><code>cd ~/catkin_ws/src</code></pre>
   </li>
   <li>
     <strong>Build the Workspace</strong>: After cloning the repository, build the workspace:
