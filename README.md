@@ -16,6 +16,8 @@
 This repository contains the code developed by the Autonomous Robotics Nucleus (RMA) of the SEMEAR group at the University of São Paulo (USP) - São Carlos, for the CBR@Work 2024 competition. The competition challenges teams to build autonomous robots capable of performing complex industrial tasks, such as transporting parts, precisely manipulating objects, and navigating dynamic industrial environments with obstacles. The goal is to optimize task sequencing based on provided orders, integrating navigation, recognition, and manipulation capabilities to operate in a realistic industrial setting.
 </p>
 
+## <div id="project-overview"></div>Project Overview
+
 ## <div id="installation"></div>Installation
 
 <h3>System Requirements</h3>
@@ -46,12 +48,6 @@ catkin_make</code></pre>
     <pre><code>source ~/catkin_ws/devel/setup.bash</code></pre>
   </li>
 </ol>
-
-<h3>Additional ROS Packages</h3>
-<p>Ensure the necessary ROS packages for navigation, manipulation, and perception are installed. You can find installation instructions in the official ROS documentation:</p>
-<ul>
-  ...
-</ul>
 
 ## <div id="usage"></div>Usage
 Soon... 👀
