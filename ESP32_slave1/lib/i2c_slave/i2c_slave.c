@@ -56,12 +56,12 @@ void i2c_read_task() {
 
     // "Unpacking" data values (right)
     for(int i = 2; i < 6; i++){
-        read_value_r |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
+        read_value_l |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
     } 
     
     // "Unpacking" data values (left)
     for(int i = 6; i < 10; i++){
-        read_value_l |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
+        read_value_r |= (rx_data[i] << 8 * ((READ_LEN_VALUE - 1) - i));
     } 
 
     if (size > 0) {
@@ -79,10 +79,20 @@ void i2c_read_task() {
         TARGET_VALUE_R = TARGET_VALUE_R / 1000;
         TARGET_VALUE_L = TARGET_VALUE_L / 1000;
 
-        //printf("Read value: %f, %f\n", TARGET_VALUE_R, TARGET_VALUE_L);
+        if( read_value_r > 7000 || read_value_l > 7000 || ((read_value_r == 10) && (read_value_l == 0))){
+            TARGET_VALUE_R = 0;
+            TARGET_VALUE_L = 0;
+            // ESP_LOGI(TAG, "Read failed!");
+            // ESP_LOGI(TAG, "Read failed! Restarting I2C...");
+            esp_restart(); 
+        }
+
+        // printf("Read value (Dir, Esq): %d, %d\n", read_value_r, read_value_l);
 
     } else {
-        ESP_LOGI(TAG, "Read failed!");
+        // ESP_LOGI(TAG, "Read failed!");
+        // ESP_LOGI(TAG, "Read failed! Restarting I2C...");
+        reset_i2c(I2C_SLAVE_NUM);  // Reinicia o I2C se falhar
     }
 
 }
@@ -119,13 +129,16 @@ void i2c_write_task(int value_r, int value_l) {
 
 // Task de comunicação, com a função Read e Write em um loop continuo
 void i2c_task_com() {
-    ESP_ERROR_CHECK(i2c_slave_init());
+    ESP_ERROR_CHECK(i2c_slave_init());  // Reinicia o driver I2C antes de começar a comunicação
     i2c_write_queue = xQueueCreate(10, I2C_SLAVE_TX_BUF_LEN);
+
     while(1){
         i2c_read_task();
-        i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
+        // i2c_write_task(ENCODER_READ_L, ENCODER_READ_R);
         vTaskDelay(FREQ_COMMUNICATION / portTICK_PERIOD_MS);
     }
+    
+    ESP_ERROR_CHECK(i2c_driver_delete(I2C_SLAVE_NUM));
 }
 
 // Task de controle: pid, pwm, encoders...

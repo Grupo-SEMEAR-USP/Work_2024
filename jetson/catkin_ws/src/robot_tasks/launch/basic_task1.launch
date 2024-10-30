@@ -1,0 +1,15 @@
+<launch>
+  <!-- Inicia os launchs gerais -->
+  <include file="$(find robot_tasks)/launch/general.launch"/> 
+
+  <!-- Inicia o controle do robô -->
+  <node name="align_block" pkg="robot_block_finder" type="align_block.py" />
+
+  <node name="table_edge_detector" pkg="robot_base_control" type="border_detect.py" />
+
+  <node name="ziguezague_controller" pkg="robot_base_control" type="search_block.py"/>
+
+  <!-- Inicia o scheduler da Basic Test 1 -->
+  <!-- <node name="scheduler_node" pkg="robot_scheduler" type="scheduler_basic_test1.py" /> -->
+  
+</launch>

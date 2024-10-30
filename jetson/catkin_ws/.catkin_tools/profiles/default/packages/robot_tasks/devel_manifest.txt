@@ -1,0 +1,5 @@
+robot_tasks
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/robot_tasks/cmake.lock /home/rmajetson/Work_2024/jetson/catkin_ws/devel/./cmake.lock
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/robot_tasks/share/robot_tasks/cmake/robot_tasksConfig-version.cmake /home/rmajetson/Work_2024/jetson/catkin_ws/devel/share/robot_tasks/cmake/robot_tasksConfig-version.cmake
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/robot_tasks/share/robot_tasks/cmake/robot_tasksConfig.cmake /home/rmajetson/Work_2024/jetson/catkin_ws/devel/share/robot_tasks/cmake/robot_tasksConfig.cmake
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/robot_tasks/lib/pkgconfig/robot_tasks.pc /home/rmajetson/Work_2024/jetson/catkin_ws/devel/lib/pkgconfig/robot_tasks.pc

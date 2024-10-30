@@ -1,0 +1,5 @@
+usb_cam_launch
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/usb_cam_launch/cmake.lock /home/rmajetson/Work_2024/jetson/catkin_ws/devel/./cmake.lock
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/usb_cam_launch/share/usb_cam_launch/cmake/usb_cam_launchConfig-version.cmake /home/rmajetson/Work_2024/jetson/catkin_ws/devel/share/usb_cam_launch/cmake/usb_cam_launchConfig-version.cmake
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/usb_cam_launch/share/usb_cam_launch/cmake/usb_cam_launchConfig.cmake /home/rmajetson/Work_2024/jetson/catkin_ws/devel/share/usb_cam_launch/cmake/usb_cam_launchConfig.cmake
+/home/rmajetson/Work_2024/jetson/catkin_ws/devel/.private/usb_cam_launch/lib/pkgconfig/usb_cam_launch.pc /home/rmajetson/Work_2024/jetson/catkin_ws/devel/lib/pkgconfig/usb_cam_launch.pc
