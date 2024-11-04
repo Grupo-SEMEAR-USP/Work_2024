@@ -13,7 +13,7 @@ import threading
 # Constantes
 ESP32_ADDRESS_FRONT = 0x09  # Endereço do dispositivo ESP32 esquerdo no barramento I2C
 ESP32_ADDRESS_REAR = 0x08  # Endereço do dispositivo ESP32 direito no barramento I2C
-I2C_BUS = 7  # Número do barramento I2C no Raspberry Pi
+I2C_BUS = 1  # Número do barramento I2C no Raspberry Pi
 REG_ADDRESS = 10  # Endereço de registro (offset) a ser usado pelo PID
 
 encoder_data_global = [0, 0, 0, 0]  # Variável global para armazenar os dados dos encoders

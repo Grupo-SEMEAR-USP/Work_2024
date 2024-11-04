@@ -6,16 +6,32 @@ from movement_controller import MovementController
 from std_msgs.msg import Int32
 import rospy
 
+''' (Defining Variables For Line Follower)
+
+turn_side = 1 - Virar à esquerda
+turn_side = 2 - Virar à direita
+
+turn_at_intersection = N° da intersecção para virar (1, 2, 3, 4)
+
+lost_line_turn = 0 - Andar reto até achar a linha
+lost_line_turn = 1 - Virar à esquerda se perder a linha
+lost_line_turn = 2 - Virar à direita se perder a linha
+
+side_surpass = 1 - Fazer a ultrapassagem pela esquerda se encontrar obstáculo
+side_surpass = 2 - Fazer a ultrapassagem pela direita se encontrar obstáculo
+'''
+
 def seg_12():
 
     #Giro inicial de 90°
     movement_sequence = [
-        {'action': 'turn', 'direction': 'left', 'duration': 2.6},
+        {'action': 'turn', 'direction': 'left_z', 'duration': 5.65},
+        {'action': 'turn', 'direction': 'left', 'duration': 5.65},
     ]
     #Curva
-    move = MovementController()
+    move = MovementController() 
     move.start()
-    move.use_camera = False
+    #move.use_camera = False
     move.execute_movement_sequence(movement_sequence)
 
     while not rospy.is_shutdown():
@@ -26,16 +42,17 @@ def seg_12():
             break
 
     movement_sequence = [
-        {'action': 'move_forward', 'duration': 1.8},
+        {'action': 'move_forward', 'duration': 2.1},
         {'action': 'turn', 'direction': 'left', 'duration': 2.2},
     ]
     
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 0  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
     #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -63,7 +80,8 @@ def seg_13():
 
     # #Giro inicial de 90°
     # movement_sequence = [
-    #     {'action': 'turn', 'direction': 'left', 'duration': 2.6},
+    #     {'action': 'turn', 'direction': 'left', 'duration': 2.65},
+    #     {'action': 'move_forward', 'duration': 2.5},
     # ]
     # #Curva
     # move = MovementController()
@@ -79,16 +97,16 @@ def seg_13():
     #         break
 
     movement_sequence = [
-        {'action': 'move_forward', 'duration': 1.9},
+        {'action': 'move_forward', 'duration': 2.2},
         {'action': 'turn', 'direction': 'left', 'duration': 2.2},
     ]
     
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 2 # Virar na 2ª interseção
     lost_line_turn = 0  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -113,15 +131,16 @@ def seg_13():
     rospy.sleep(2.0)
 
     movement_sequence = [
-        {'action': 'move_forward', 'duration': 1.9},
-        {'action': 'turn', 'direction': 'right', 'duration': 2.},
+        {'action': 'move_forward', 'duration': 2.15},
+        {'action': 'turn', 'direction': 'right', 'duration': 2.0},
     ]
 
     turn_side = 2  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 0  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
@@ -172,9 +191,9 @@ def seg_14():
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 2  # Virar na 2ª interseção
     lost_line_turn = 2  # Virar à direita se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -199,8 +218,9 @@ def seg_14():
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 0  # Andar rto até ahar a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
@@ -254,9 +274,9 @@ def seg_ALL5():
     turn_side = 2  # Definir como virar à direit
     turn_at_intersection = 1  # Virar na 1ª interseção
     lost_line_turn = 2  # Virar à direita se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -306,9 +326,9 @@ def seg_ALL6():
     turn_side = 2  # Definir como virar à direita
     turn_at_intersection = 1  # Virar na 1ª interseção
     lost_line_turn = 2  # Virar à direita se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -363,9 +383,9 @@ def seg_41():
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 0  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -389,9 +409,9 @@ def seg_41():
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 1  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
@@ -449,9 +469,9 @@ def seg_31():
     turn_side = 2  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 2  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
@@ -475,13 +495,12 @@ def seg_31():
     turn_side = 1  # Definir como virar à esquerda
     turn_at_intersection = 1  # Virar na 2ª interseção
     lost_line_turn = 0  # Virar à esquerda se perder a linha
+    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
 
-
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn)
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
-
 
     #Giro inicial de 90°
     movement_sequence = [

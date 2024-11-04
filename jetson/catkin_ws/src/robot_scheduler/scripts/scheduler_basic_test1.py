@@ -223,7 +223,7 @@ def main():
 
     with sm:
         smach.StateMachine.add('TASK1', Task1(), 
-                               transitions={'completed': 'TASK2', 'failed': 'all_tasks_failed'})
+                               transitions={'completed': 'TASK3', 'failed': 'all_tasks_failed'})
         
         smach.StateMachine.add('TASK2', Task2(), 
                                transitions={'completed': 'TASK4', 'failed': 'all_tasks_failed'})

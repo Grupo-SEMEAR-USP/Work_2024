@@ -3,7 +3,7 @@
   <include file="$(find robot_tasks)/launch/general.launch"/> 
 
   <!-- Inicia o controle do robô -->
-  <node name="align_block" pkg="robot_block_finder" type="align_block.py" />
+  <node name="align_block" pkg="robot_block_finder" type="align_block.py" output="screen"/>
 
   <node name="table_edge_detector" pkg="robot_base_control" type="border_detect.py" />
 

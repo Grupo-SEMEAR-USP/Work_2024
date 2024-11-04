@@ -211,8 +211,12 @@ class MovementController:
                 cmd_vel = Twist()
                 if self.turn_direction == 'right':
                     cmd_vel.linear.y = -self.velocidade_angular
-                else:
+                elif self.turn_direction == 'left':
                     cmd_vel.linear.y = self.velocidade_angular
+                elif self.turn_direction == 'right_z':
+                    cmd_vel.angular.z = self.velocidade_angular
+                else:
+                    cmd_vel.angular.z = -self.velocidade_angular
                 self.cmd_vel_pub.publish(cmd_vel)
             else:
                 self.stop()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from std_msgs.msg import String, Int32
+from std_msgs.msg import String, Int32, Float32
 from sensor_msgs.msg import Range
 from apriltag_ros.msg import AprilTagDetectionArray
 
@@ -16,7 +16,7 @@ class ZigZagSearch:
         self.pub_feedback = rospy.Publisher('/search_block/feedback', Int32, queue_size=10)
         self.sub_search = rospy.Subscriber('/search_block', String, self.search_callback)
         self.sub_tag_detections = rospy.Subscriber('/tag_detections', AprilTagDetectionArray, self.tag_detection_callback)
-        self.sub_ultrasound_right = rospy.Subscriber('/ultrasound_right', Range, self.ultrasound_callback)
+        self.sub_ultrasound_right = rospy.Subscriber('/ultrasound_sensor_right', Float32, self.ultrasound_callback)  # Alteração para Float32
 
         self.rate = rospy.Rate(50)
         self.movement_active = False
@@ -41,7 +41,7 @@ class ZigZagSearch:
             rospy.logerr(f"Erro ao interpretar a mensagem: {msg.data}. Formato esperado: 'start, <ID_do_bloco>'")
 
     def ultrasound_callback(self, data):
-        self.current_distance = data.range / 100  # Atualiza a distância com a leitura do sensor ultrassônico
+        self.current_distance = data.data / 100  # Atualiza a distância com a leitura do sensor ultrassônico
 
     def perform_zigzag(self):
         if self.movement_active:

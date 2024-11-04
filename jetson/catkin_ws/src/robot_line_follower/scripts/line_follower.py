@@ -6,13 +6,11 @@ import numpy as np
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
-from sensor_msgs.msg import Range
-from std_msgs.msg import String
 import time
 
 # Constantes
 LINEAR_SPEED = 0.2
-KP_BASE = 1.5 / 1000
+KP_BASE = 2 / 1000
 MIN_AREA_TRACK = 100
 DETECTION_REGION_PERCENTAGE = 0.10
 MOVING_AVERAGE_SIZE = 7
@@ -47,10 +45,9 @@ def numpy_to_imgmsg(np_img, encoding='bgr8'):
     return img_msg
 
 class LineFollower:
-    def __init__(self, turn_side, turn_at_intersection, lost_line_turn):
+    def __init__(self, turn_side, turn_at_intersection, lost_line_turn, sla):
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
-        self.ultrasonic_sub = rospy.Subscriber("/ultrasound_front", Range, self.ultrasonic_callback)
-        self.move_time_pub = rospy.Publisher("/move_time", String, queue_size=10)
+        self.ultrasonic_sub = rospy.Subscriber("ultrasound_front", Float32, self.ultrasonic_callback)
         self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         self.mask_pub = rospy.Publisher("/mask_image", Image, queue_size=1)
         self.feedback_pub = rospy.Publisher("qualquer_coisa_feedback", Float32, queue_size=1)
@@ -83,7 +80,7 @@ class LineFollower:
         self.next_rotation_direction = 1  # Alterna entre 1 e -1 para a direção de angular.z
 
     def ultrasonic_callback(self, data):
-        self.ultrasonic_distance = data.range / 100.0
+        self.ultrasonic_distance = data.data
         rospy.loginfo(f"Distância ultrassônica atual: {self.ultrasonic_distance:.2f}")
         if self.ultrasonic_distance < ULTRASONIC_THRESHOLD and not self.obstacle_detected:
             self.obstacle_detected = True
@@ -146,39 +143,39 @@ class LineFollower:
             rospy.loginfo(f"Velocidade Angular no Modo de Busca: {cmd_vel.linear.y:.2f}")
             rospy.loginfo(f"Interseções detectadas - Esquerda: {self.intersection_left_count}, Direita: {self.intersection_right_count}")
 
-        # try:
-        #     # Publicar a imagem com a máscara aplicada
-        #     mask_image_msg = numpy_to_imgmsg(masked_frame, encoding="bgr8")
-        #     self.mask_pub.publish(mask_image_msg)
+        try:
+            # Publicar a imagem com a máscara aplicada
+            mask_image_msg = numpy_to_imgmsg(masked_frame, encoding="bgr8")
+            self.mask_pub.publish(mask_image_msg)
 
-        #      # Salve a imagem processada em um arquivo no diretório desejado
-        #     image_save_path = "/home/rmajetson/saved_images/processed_image.jpg"
-        #     cv2.imwrite(image_save_path, masked_frame)
-        #     #rospy.loginfo(f"Imagem salva em: {image_save_path}")
+             # Salve a imagem processada em um arquivo no diretório desejado
+            image_save_path = "/home/rmajetson/saved_images/processed_image.jpg"
+            cv2.imwrite(image_save_path, masked_frame)
+            #rospy.loginfo(f"Imagem salva em: {image_save_path}")
 
             
-        #     # Salvar a imagem com a máscara aplicada
+            # Salvar a imagem com a máscara aplicada
 
-        # except Exception as e:
-        #     rospy.logerr("Falha ao converter e publicar a imagem da máscara: %s", e)
+        except Exception as e:
+            rospy.logerr("Falha ao converter e publicar a imagem da máscara: %s", e)
 
         self.cmd_vel_pub.publish(cmd_vel)
 
         if self.obstacle_detected and not self.angular_movement_started:
             self.handle_obstacle_rotation()
-        # elif self.following_start_time and (time.time() - self.following_start_time) >= FOLLOWER_INTERVAL:
-        #     self.handle_timed_return_rotation()
+        elif self.following_start_time and (time.time() - self.following_start_time) >= FOLLOWER_INTERVAL:
+            self.handle_timed_return_rotation()
 
     def handle_obstacle_rotation(self):
         rospy.loginfo("Obstáculo detectado, iniciando rotação em angular.z.")
 
         self.lost_line_turn = 0
+
         cmd_vel = Twist()
-        cmd_vel.angular.z = 2.0 * self.next_rotation_direction
+        cmd_vel.angular.z = 0.5 * self.next_rotation_direction
         self.cmd_vel_pub.publish(cmd_vel)
-        rospy.sleep(1.0)
-        
-        self.move_time_pub.publish("direita,", ANGULAR_Z_DURATION)
+        rospy.loginfo(f"Iniciando movimento de rotação com angular.z: {cmd_vel.angular.z:.2f}")
+        rospy.sleep(ANGULAR_Z_DURATION)
 
         self.angular_movement_started = True
         self.following_start_time = time.time()
@@ -287,7 +284,7 @@ def create_mask(image, left_limit, right_limit):
     mask = np.ones_like(image) * 255
     cv2.fillPoly(mask, [left_mask_points], (0, 0, 0))
     cv2.fillPoly(mask, [right_mask_points], (0, 0, 0))
-    #yrospy.loginfo("Máscara criada.")
+    rospy.loginfo("Máscara criada.")
     
     masked_img = cv2.bitwise_and(image, mask)
     return masked_img

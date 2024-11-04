@@ -4,10 +4,12 @@ import rospy
 from robot_arm_control.msg import DualServoCommand
 from std_msgs.msg import Float32, Int32
 from adafruit_servokit import ServoKit
+import board
+import busio
 import time
 
-# Inicializa o kit PCA9685 com 16 canais
-kit = ServoKit(channels=16, address=0x41)
+i2c = busio.I2C(board.SCL_1, board.SDA_1)  # Verifique se `SCL_1` e `SDA_1` são os pinos corretos para o Jetson
+kit = ServoKit(channels=16, i2c=i2c, address=0x41)
 
 # Defina os canais dos servos
 servo_channel_plat = 0  # Servo da base
@@ -31,7 +33,7 @@ def run_servo_for_time(channel, speed, duration):
     set_servo_speed(channel, speed)
     try:
         time.sleep(duration)
-        set_servo_speed(channel, -0.01)  # Para o servo após a duração
+        set_servo_speed(channel, 0.0)  # Para o servo após a duração
         rospy.loginfo("Servo no canal %d parado\n", channel)
         return 1  # Sucesso
     except Exception as e:
