@@ -17,6 +17,7 @@ DETECTION_REGION_PERCENTAGE = 0.10
 MOVING_AVERAGE_SIZE = 7
 MIN_LINE_PROPORTION = 0.1
 MIN_PERSISTENCE_FRAMES = 3
+ULTRASONIC_THRESHOLD = 0.18  # Distância em cm para detecção de obstáculo
 ANGULAR_Z_DURATION = 3  # Tempo em segundos para o movimento em angular.z
 FOLLOWER_INTERVAL = 15  # Tempo em segundos para seguir a linha antes de retorno
 
@@ -45,16 +46,14 @@ def numpy_to_imgmsg(np_img, encoding='bgr8'):
     return img_msg
 
 class LineFollower:
-    def __init__(self, turn_side, turn_at_intersection, lost_line_turn, side_surpass, intersection_count_delay, depth_analysis_zones):
-        # Inicialização existente
+    def __init__(self, turn_side, turn_at_intersection, lost_line_turn, side_surpass, intersection_count_delay):
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
-        self.depth_sub = rospy.Subscriber("/camera/depth/image_rect_raw", Image, self.depth_callback)
+        self.ultrasonic_sub = rospy.Subscriber("/ultrasound_front", Float32, self.ultrasonic_callback)
         self.move_time_pub = rospy.Publisher("/move_time", String, queue_size=10)
         self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         self.mask_pub = rospy.Publisher("/mask_image", Image, queue_size=1)
         self.feedback_pub = rospy.Publisher("qualquer_coisa_feedback", Float32, queue_size=1)
         
-        # Atributos iniciais
         self.turn_side = turn_side
         self.turn_at_intersection = turn_at_intersection
         self.lost_line_turn = lost_line_turn
@@ -68,69 +67,32 @@ class LineFollower:
         self.search_mode = False
         self.intersection_left_count = 0
         self.intersection_right_count = 0
+        self.left_buffer = []
+        self.right_buffer = []
+        self.left_detected = False
+        self.right_detected = False
+        self.left_persistence = 0
+        self.right_persistence = 0
         self.stopped = False
         self.obstacle_detected = False
+        self.ultrasonic_distance = float('inf')
         
-        # Adiciona novos atributos de análise de profundidade
-        self.depth_analysis_zones = depth_analysis_zones  # Exemplo: [1, 1, 0]
-        self.depth_persistence_count = [0, 0, 0]  # Contador de persistência para cada ponto de análise
-        self.depth_threshold = 0.20  # Limite de distância em metros (20 cm)
-        self.pixels_to_analyze = [(320, 360), (640, 360), (960, 360)]  # Posição dos três pontos -> MUDAR
-
-        # Controle de tempo e estado
+        # Variáveis de controle de tempo e estado
         self.following_start_time = None
         self.angular_movement_started = False
-        self.timed_rotation_ready = False
-
-        # Tempo de interseção
+        self.timed_rotation_ready = False  # Controle para ativar o timed rotation após o intervalo
+        
+        # Adiciona o controle de tempo para contagem de interseções
         self.intersection_count_delay = intersection_count_delay
-        self.start_time = time.time()
-        
-        
-    def depth_callback(self, data):
-        # Converte os dados da imagem de profundidade para um array NumPy
-        try:
-            height = data.height
-            width = data.width
+        self.start_time = time.time()  # Marca o momento de inicialização
 
-            # Converte a mensagem Image para um array NumPy
-            depth_array = np.frombuffer(data.data, dtype=np.uint16).reshape(height, width)
-
-            # Define tamanho da ROI em volta de cada ponto
-            roi_size = 20  # Tamanho da ROI, por exemplo, 20x20 pixels
-
-            # Processa cada ponto (direita, centro, esquerda) em `self.pixels_to_analyze`
-            for i, (center_x, center_y) in enumerate(self.pixels_to_analyze):
-                if self.depth_analysis_zones[i] == 0:
-                    continue  # Ignora se a zona não está ativa
-
-                # Define os limites da ROI ao redor do ponto atual
-                roi_x_start = max(0, center_x - roi_size // 2)
-                roi_x_end = min(width, center_x + roi_size // 2)
-                roi_y_start = max(0, center_y - roi_size // 2)
-                roi_y_end = min(height, center_y + roi_size // 2)
-
-                # Extrai a ROI e calcula a distância média
-                roi_depth_data = depth_array[roi_y_start:roi_y_end, roi_x_start:roi_x_end]
-                mean_distance = np.mean(roi_depth_data) / 1000.0  # Converte para metros
-
-                rospy.loginfo(f"Distância média da ROI no ponto {i} ({center_x}, {center_y}): {mean_distance:.2f} metros")
-
-                # Armazena a leitura recente para persistência
-                if mean_distance < self.depth_threshold:
-                    self.depth_persistence_count[i] += 1
-                else:
-                    self.depth_persistence_count[i] = 0
-
-                # Verifica se a persistência foi atingida para acionar o desvio
-                if self.depth_persistence_count[i] >= 3:
-                    rospy.loginfo(f"Obstáculo detectado em 3 leituras consecutivas no ponto {i}. Iniciando rotina de desvio.")
-                    self.obstacle_detected = True
-                    self.handle_obstacle_rotation(i)
-                    break  # Evita múltiplos desvios simultâneos
-
-        except Exception as e:
-            rospy.logerr(f"Erro ao processar a imagem de profundidade: {e}")
+    def ultrasonic_callback(self, data):
+        self.ultrasonic_distance = data.data / 100.0
+        rospy.loginfo(f"Distância ultrassônica atual: {self.ultrasonic_distance:.2f}")
+        if self.ultrasonic_distance < ULTRASONIC_THRESHOLD and not self.obstacle_detected:
+            self.obstacle_detected = True
+            self.following_start_time = time.time()
+            rospy.loginfo("Obstáculo detectado - iniciando rotação.")
 
     def image_callback(self, data):
         if self.stopped:
@@ -206,41 +168,38 @@ class LineFollower:
         # except Exception as e:
         #     rospy.logerr("Falha ao converter e publicar a imagem da máscara: %s", e)
 
-    def handle_obstacle_rotation(self, obstacle_position):
-        # Define direção do desvio com base no ponto onde o obstáculo foi detectado
-        if obstacle_position == 0:  # Obstáculo na direita
-            rospy.loginfo("Desviando para a ESQUERDA devido a obstáculo na direita.")
-            comando = "esquerda,3.0"
-        elif obstacle_position == 2:  # Obstáculo na esquerda
-            rospy.loginfo("Desviando para a DIREITA devido a obstáculo na esquerda.")
-            comando = "direita,3.0"
-        else:  # Obstáculo no centro
-            if self.side_surpass == 1:
-                rospy.loginfo("Desviando para a DIREITA devido a obstáculo central.")
-                comando = "direita,3.0"
-            else:
-                rospy.loginfo("Desviando para a ESQUERDA devido a obstáculo central.")
-                comando = "esquerda,3.0"
+    def handle_obstacle_rotation(self):
+        rospy.loginfo("Obstáculo detectado, iniciando rotação em angular.z.")
 
-        # Publica o comando de desvio
-        self.move_time_pub .publish(comando)
-        rospy.sleep(ANGULAR_Z_DURATION)
-        self.following_start_time = time.time()
+        self.lost_line_turn = 0
+        cmd_vel = Twist()
+        if self.side_surpass == 1:
+            cmd_vel.angular.z = -0.5
+        elif self.side_surpass == 2:
+            cmd_vel.angular.z = 0.5
+        self.cmd_vel_pub.publish(cmd_vel)
+        
+        self.move_time_pub.publish("direita,", ANGULAR_Z_DURATION)
+
         self.angular_movement_started = True
+        self.following_start_time = time.time()
         self.obstacle_detected = False
+        self.timed_rotation_ready = False  # Define como False até o `rotation` concluir
 
     def handle_timed_return_rotation(self):
         rospy.loginfo("Tempo do seguidor expirado, retornando à posição inicial com rotação em angular.z.")
+
+        cmd_vel = Twist()
     
         if self.side_surpass == 1:
-            comando = "esquerda, 3.0"
+            cmd_vel.angular.z = 0.5
         elif self.side_surpass == 2:
-            comando = "direita, 3.0"
+            cmd_vel.angular.z = -0.5
 
-        self.move_time_pub .publish(comando)
-        rospy.loginfo(f"Movimento de rotação reverso com angular.z: {comando}")
-        rospy.sleep(3.5)
-        
+        self.cmd_vel_pub.publish(cmd_vel)
+        rospy.loginfo(f"Movimento de rotação reverso com angular.z: {cmd_vel.angular.z:.2f}")
+        rospy.sleep(ANGULAR_Z_DURATION)
+
         self.lost_line_turn = self.original_lost_line_turn
         self.angular_movement_started = False
         self.following_start_time = None

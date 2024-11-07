@@ -51,9 +51,9 @@ class MovementController:
         self.left_limit = 170
         self.right_limit = 470
         self.tolerancia_x = 20
-        self.tolerancia_y = 40
+        self.tolerancia_y = 60
+        
         self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
-        # Removido o uso do CvBridge
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
         self.mask_pub = rospy.Publisher("/mask_image", Image, queue_size=1)
         self.feedback_pub = rospy.Publisher("qualquer_coisa_feedback", Float32, queue_size=1)

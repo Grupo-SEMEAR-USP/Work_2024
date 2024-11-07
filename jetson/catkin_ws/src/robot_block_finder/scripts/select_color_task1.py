@@ -11,24 +11,51 @@ green_blocks = []
 camera_image = None
 image_received = False  # Flag para indicar quando a imagem foi recebida
 
-def detect_block_color(image, x, y, w, h, tag_id):
-
-
-    rospy.loginfo(f"Detectando cor para o bloco ID {tag_id} na região x:{x}, y:{y}, w:{w}, h:{h}")
-    roi = image[y:y+h, x:x+w]
-
-    avg_color_per_row = np.mean(roi, axis=0)
-    avg_color = np.mean(avg_color_per_row, axis=0)
-    avg_color_rgb = (int(avg_color[2]), int(avg_color[1]), int(avg_color[0]))  # Convertendo para RGB
-    rospy.loginfo(f"Valor médio RGB para o bloco ID {tag_id}: {avg_color_rgb}")
+def filter_colors(image):
+    # Converte a imagem para o espaço de cor HSV
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
+    # Máscaras para cores neutras (branco expandido, preto e cinza)
+    white_lower = np.array([0, 0, 170])  # Expansão para incluir mais tons de branco
+    white_upper = np.array([180, 70, 255])
+    black_lower = np.array([0, 0, 0])
+    black_upper = np.array([180, 255, 50])
+    gray_lower = np.array([0, 0, 30])    # Expansão para incluir mais tons de cinza claro
+    gray_upper = np.array([180, 70, 170])
+
+    # Máscaras para eliminar essas cores
+    white_mask = cv2.inRange(hsv_image, white_lower, white_upper)
+    black_mask = cv2.inRange(hsv_image, black_lower, black_upper)
+    gray_mask = cv2.inRange(hsv_image, gray_lower, gray_upper)
+
+    # Combina todas as máscaras para filtrar branco, preto e cinza
+    neutral_mask = cv2.bitwise_or(white_mask, black_mask)
+    neutral_mask = cv2.bitwise_or(neutral_mask, gray_mask)
+
+    # Inverte a máscara para manter apenas as cores desejadas
+    filtered_image = cv2.bitwise_and(image, image, mask=cv2.bitwise_not(neutral_mask))
+    
+    # Salva a imagem resultante para verificação
+    filename = "Work_2024/jetson/catkin_ws/src/robot_utils/imgs/filtered_image.png"
+    cv2.imwrite(filename, filtered_image)
+
+    return filtered_image
+
+def detect_block_color(image, x, y, w, h, tag_id):
+    rospy.loginfo(f"Detectando cor para o bloco ID {tag_id} na região x:{x}, y:{y}, w:{w}, h:{h}")
+    
+    # Aplica o filtro para remover branco, preto e cinza
+    filtered_image = filter_colors(image)
+    roi = filtered_image[y:y+h, x:x+w]
+
+    # Converte a ROI de borda para HSV
     hsv_image = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     
-    # Limites refinados para as cores rosa e verde em HSV
+    # Limites para as cores rosa e verde em HSV
     pink_lower = (150, 100, 100)
     pink_upper = (170, 255, 255)
-    green_lower = (40, 70, 70)
-    green_upper = (80, 255, 255)
+    green_lower = (50, 150, 100)  # Ajuste para um verde mais vibrante
+    green_upper = (70, 255, 255)
 
     # Máscaras para rosa e verde
     pink_mask = cv2.inRange(hsv_image, pink_lower, pink_upper)
@@ -53,11 +80,9 @@ def detect_block_color(image, x, y, w, h, tag_id):
     result_image = cv2.bitwise_and(roi, roi, mask=selected_mask)
     filename = f"Work_2024/jetson/catkin_ws/src/robot_utils/imgs/detected_{color_name}_block_id_{tag_id}.png"
     cv2.imwrite(filename, result_image)
-    # rospy.loginfo(f"Imagem salva: {filename}")
 
     filename = f"Work_2024/jetson/catkin_ws/src/robot_utils/imgs/roi_{color_name}_block_id_{tag_id}.png"
     cv2.imwrite(filename, roi)
-    # rospy.loginfo(f"ROI salva: {filename}")
 
     return color_name
 
@@ -92,10 +117,12 @@ def tag_detections_callback(data):
         tag_id = detection.id[0]
         position = detection.pose.pose.pose.position
 
-        x = int(position.x * 1000) + 300
-        y = int(position.y * 1000) + 220
-        w, h = 100, 100
+        # Ajuste da ROI ao redor do ArUco, com um ROI maior
+        x = int(position.x * 1000) + 220  # Ajuste para centralizar em torno do marcador
+        y = int(position.y * 1000) + 190
+        w, h = 180, 180  # Aumentar a área da ROI para capturar mais contexto
 
+        # Garantir que a ROI esteja dentro da imagem
         if camera_image is not None:
             x = max(0, min(camera_image.shape[1] - w, x))
             y = max(0, min(camera_image.shape[0] - h, y))

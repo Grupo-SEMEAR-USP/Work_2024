@@ -20,6 +20,7 @@ generate_messages(
 
 catkin_install_python(PROGRAMS
   scripts/pose_transition_node.py
+  scripts/arm_teleop.py
   src/arm_hw_interface.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

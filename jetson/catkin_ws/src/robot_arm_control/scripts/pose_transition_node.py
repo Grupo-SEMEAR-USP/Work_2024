@@ -1,18 +1,15 @@
 import rospy
 from robot_arm_control.msg import DualServoCommand, MoveToPoseCommand
 from std_msgs.msg import Int32
-import time
 
 feedback_received = None
 last_command = None
 
-def publish_pose_transition(pub_dual_servo, plat_angle, plat_duration, manip_angle, manip_duration):
+def publish_pose_transition(pub_dual_servo, plat_angle, manip_angle):
     msg = DualServoCommand()
-    msg.plat_speed = plat_angle
-    msg.plat_duration = plat_duration
-    msg.manip_speed = manip_angle
-    msg.manip_duration = manip_duration
-    rospy.loginfo(f"Publicando: plat_angle={plat_angle}, plat_duration={plat_duration}, manip_angle={manip_angle}, manip_duration={manip_duration}")
+    msg.platform_angle = plat_angle  # Publica apenas o ângulo para o platform
+    msg.manipulator_angle = manip_angle  # Publica apenas o ângulo para o manipulador
+    rospy.loginfo(f"Publicando: platform_angle={plat_angle}, manipulator_angle={manip_angle}")
     pub_dual_servo.publish(msg)
 
 def feedback_callback(msg):
@@ -36,11 +33,10 @@ def move_to_pose_callback(msg):
     try:
         pose = rospy.get_param(f"poses/{pose_name}")
         plat_angle = pose['plat_angle']
-        plat_duration = pose['plat_duration']
         manip_angle = pose['manip_angle']
-        manip_duration = pose['manip_duration']
         
-        publish_pose_transition(pub_dual_servo, plat_angle, plat_duration, manip_angle, manip_duration)
+        # Publica a transição de pose com os ângulos ajustados
+        publish_pose_transition(pub_dual_servo, plat_angle, manip_angle)
 
         feedback_received = None
         timeout = rospy.Time.now() + rospy.Duration(10)

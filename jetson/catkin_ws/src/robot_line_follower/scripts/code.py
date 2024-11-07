@@ -11,7 +11,7 @@ import rospy
 turn_side = 1 - Virar à esquerda
 turn_side = 2 - Virar à direita
 
-turn_at_intersection = N° da intersecção para virar (1, 2, 3, 4)
+turn_at_intersection = N° da intrsecção para virar (1, 2, 3, 4)
 
 lost_line_turn = 0 - Andar reto até achar a linha
 lost_line_turn = 1 - Virar à esquerda se perder a linha
@@ -19,16 +19,16 @@ lost_line_turn = 2 - Virar à direita se perder a linha
 
 side_surpass = 1 - Fazer a ultrapassagem pela esquerda se encontrar obstáculo
 side_surpass = 2 - Fazer a ultrapassagem pela direita se encontrar obstáculo
+
+time_delay = t - Tempo até iniciar a contagem das intersecções
 '''
 
 def seg_12():
-
     #Giro inicial de 90°
     movement_sequence = [
         {'action': 'turn', 'direction': 'left_z', 'duration': 5.65},
-        {'action': 'turn', 'direction': 'left', 'duration': 5.65},
+        {'action': 'turn', 'direction': 'left', 'duration': 2.2},
     ]
-    #Curva
     move = MovementController() 
     move.start()
     #move.use_camera = False
@@ -37,29 +37,30 @@ def seg_12():
     while not rospy.is_shutdown():
         if move.sequence_complete == 1:  
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move.stop_controller()  # Parar controlador e timers
+            move.stop_controller() 
             move.stop_feedback()
             break
+
+#----------------------------------------------------------------------------------------------#
 
     movement_sequence = [
         {'action': 'move_forward', 'duration': 2.1},
         {'action': 'turn', 'direction': 'left', 'duration': 2.2},
     ]
     
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 0  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 1 
+    turn_at_intersection = 1
+    lost_line_turn = 0  
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    #Seguidor de linha, parte 1
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -73,8 +74,6 @@ def seg_12():
             rospy.sleep(0.1)
             move.stop_feedback()
             break
-
-    #Processo de andar at'proximidade X
 
 def seg_13():
 
@@ -96,27 +95,30 @@ def seg_13():
     #         move.stop_feedback()
     #         break
 
+#----------------------------------------------------------------------------------------------#
+
     movement_sequence = [
         {'action': 'move_forward', 'duration': 2.2},
         {'action': 'turn', 'direction': 'left', 'duration': 2.2},
     ]
     
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 2 # Virar na 2ª interseção
-    lost_line_turn = 0  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 1 
+    turn_at_intersection = 2 
+    lost_line_turn = 0 
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay,zonas_de_analise)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
 
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
-    #move.use_camera = False
+    move.use_camera = False
     move.execute_movement_sequence(movement_sequence)
 
     while not rospy.is_shutdown():
@@ -126,81 +128,80 @@ def seg_13():
             move.set_feedback_scheduler(0.0)  # Publica o valor 1 no feedback
             move.stop_feedback()
             break
-    #Seguidor de linha, parte 2
-
     rospy.sleep(2.0)
 
+#----------------------------------------------------------------------------------------------#
+
     movement_sequence = [
-        {'action': 'move_forward', 'duration': 2.15},
-        {'action': 'turn', 'direction': 'right', 'duration': 2.0},
+        {'action': 'move_forward', 'duration': 2.25},
+        {'action': 'turn', 'direction': 'right', 'duration': 2.05},
     ]
 
-    turn_side = 2  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 0  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
-
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    turn_side = 2  
+    turn_at_intersection = 1 
+    lost_line_turn = 2  
+    surpass_side = 1 
+    time_delay = 1.5
+    zonas_de_analise = [1,1,0]
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
 
-    #Curva
     move1 = MovementController()
     move1.start()
     move1.use_camera = False
     move1.execute_movement_sequence(movement_sequence)
 
-     # Loop simples, sem rospy.Rate, para monitorar a variável de controle
     while not rospy.is_shutdown():
-        if move1.sequence_complete == 1:  # Verifica se o movimento foi concluído
-            move1.stop_controller()  # Parar controlador e timers
+        if move1.sequence_complete == 1:  
+            move1.stop_controller() 
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move1.set_feedback_scheduler(1.0)  # Publica o valor 1 no feedback
+            move1.set_feedback_scheduler(1.0) 
             rospy.sleep(0.1)
             move1.stop_feedback()
             break  
 
-    # Encerrando o ROS após o fim do movimento
 
 def seg_14():
 
-    #Giro inicial de 90°
-    movement_sequence = [
-        {'action': 'turn', 'direction': 'left', 'duration': 2.6},
-    ]
-    #Curva
-    move = MovementController()
-    move.start()
-    move.use_camera = False
-    move.execute_movement_sequence(movement_sequence)
+    # #Giro inicial de 90°
+    # movement_sequence = [
+    #     {'action': 'turn', 'direction': 'left', 'duration': 2.6},
+    # ]
+    # #Curva
+    # move = MovementController()
+    # move.start()
+    # move.use_camera = False
+    # move.execute_movement_sequence(movement_sequence)
 
-    while not rospy.is_shutdown():
-        if move.sequence_complete == 1:  
-            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move.stop_controller()  # Parar controlador e timers
-            move.stop_feedback()
-            break
+    # while not rospy.is_shutdown():
+    #     if move.sequence_complete == 1:  
+    #         rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+    #         move.stop_controller()  # Parar controlador e timers
+    #         move.stop_feedback()
+    #         break
+
+#----------------------------------------------------------------------------------------------#
 
     movement_sequence = [
         {'action': 'move_forward', 'duration': 0.8},
         {'action': 'turn', 'direction': 'right', 'duration': 2.4},
     ]
     
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 2  # Virar na 2ª interseção
-    lost_line_turn = 2  # Virar à direita se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 1  
+    turn_at_intersection = 2 
+    lost_line_turn = 2 
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
-
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -213,14 +214,15 @@ def seg_14():
             move.stop_feedback()
             break
 
-    #Seguidor de linha, parte 2
+#----------------------------------------------------------------------------------------------#
 
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 0  # Andar rto até ahar a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
-
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    turn_side = 1  
+    turn_at_intersection = 1 
+    lost_line_turn = 0  
+    surpass_side = 1 
+    time_delay = 0.0
+    zonas_de_analise = [1,1,1]
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
 
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
@@ -231,7 +233,6 @@ def seg_14():
         {'action': 'center_all_sides'},
     ]
 
-    #Curva
     move1 = MovementController()
     move1.start()
     move1.execute_movement_sequence(movement_sequence)
@@ -248,11 +249,9 @@ def seg_14():
 
 def seg_ALL5():
 
-    #Giro inicial de 90°
     movement_sequence = [
         {'action': 'turn', 'direction': 'left', 'duration': 2.6},
     ]
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -261,29 +260,29 @@ def seg_ALL5():
     while not rospy.is_shutdown():
         if move.sequence_complete == 1:  
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move.stop_controller()  # Parar controlador e timers
+            move.stop_controller()  #
             move.stop_feedback()
             break
 
+#----------------------------------------------------------------------------------------------#
 
     movement_sequence = [
         {'action': 'move_forward', 'duration': 1.6},
         {'action': 'turn', 'direction': 'right', 'duration': 2.0},
     ]
     
-    turn_side = 2  # Definir como virar à direit
-    turn_at_intersection = 1  # Virar na 1ª interseção
-    lost_line_turn = 2  # Virar à direita se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 2  
+    turn_at_intersection = 1
+    lost_line_turn = 2 
+    surpass_side = 1  
+    time_delay = 0.5
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
-
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.execute_movement_sequence(movement_sequence)
@@ -296,15 +295,12 @@ def seg_ALL5():
             move.stop_controller()
             break
 
-    #Processo para andar até proximidade de X com a area de servico
 
 def seg_ALL6():
 
-    #Giro inicial de 90°
     movement_sequence = [
         {'action': 'turn', 'direction': 'left', 'duration': 2.6},
     ]
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -317,25 +313,25 @@ def seg_ALL6():
             move.stop_feedback()
             break
 
+#----------------------------------------------------------------------------------------------#
 
     movement_sequence = [
         {'action': 'move_forward', 'duration': 1.2},
         {'action': 'turn', 'direction': 'left', 'duration': 2.5},
     ]
     
-    turn_side = 2  # Definir como virar à direita
-    turn_at_intersection = 1  # Virar na 1ª interseção
-    lost_line_turn = 2  # Virar à direita se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 2  
+    turn_at_intersection = 1  
+    lost_line_turn = 2 
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
-
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -345,54 +341,49 @@ def seg_ALL6():
         if move.sequence_complete == 1:  
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
             move.stop_controller()
+            move.set_feedback_scheduler(1.0) 
+            move.stop_feedback()
             break
-
-    #Seguidor de linha, parte 2
-    #FAzer a aproximação com a câmera
-
-    move.set_feedback_scheduler(1.0) 
-    move.stop_feedback()
+    
 
 def seg_41():
 
-    #VIrar 180°
     movement_sequence = [
         {'action': 'turn', 'direction': 'right', 'duration': 4.4},
     ]
 
-    #Curva
     move1 = MovementController()
     move1.start()
     move1.use_camera = False
     move1.execute_movement_sequence(movement_sequence)
 
-     # Loop simples, sem rospy.Rate, para monitorar a variável de controle
     while not rospy.is_shutdown():
-        if move1.sequence_complete == 1:  # Verifica se o movimento foi concluído
+        if move1.sequence_complete == 1:
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move1.set_feedback_scheduler(0.0)  # Publica o valor 1 no feedback
+            move1.set_feedback_scheduler(0.0) 
             move1.stop_feedback()
-            move1.stop_controller()  # Parar controlador e timers
+            move1.stop_controller() 
             break  
-    ############  inicio do código #############
+
+#----------------------------------------------------------------------------------------------#
+
     movement_sequence = [
         {'action': 'move_forward', 'duration': 1.9},
         {'action': 'turn', 'direction': 'left', 'duration': 2.3},
     ]
     
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 0  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 1  
+    turn_at_intersection = 1  
+    lost_line_turn = 0  
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
-
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.execute_movement_sequence(movement_sequence)
@@ -406,22 +397,24 @@ def seg_41():
 
     rospy.sleep(3.0)
 
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 1  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+#----------------------------------------------------------------------------------------------#
 
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    turn_side = 1  
+    turn_at_intersection = 1 
+    lost_line_turn = 1
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
 
-    #Giro inicial de 90°
     movement_sequence = [
         {'action': 'move_forward', 'duration': 2.0},
         {'action': 'turn', 'direction': 'left', 'duration': 2.4},
     ]
-    #Curva
+
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -430,14 +423,13 @@ def seg_41():
     while not rospy.is_shutdown():
         if move.sequence_complete == 1:  
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move.set_feedback_scheduler(1.0)  # Publica o valor 1 no feedback
+            move.set_feedback_scheduler(1.0)  
             rospy.sleep(0.1)
-            move.stop_controller()  # Parar controlador e timers
+            move.stop_controller()
             move.stop_feedback()
             break
-        rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
+
 
 
 def seg_31():
@@ -446,39 +438,38 @@ def seg_31():
         {'action': 'turn', 'direction': 'right', 'duration': 2.6},
     ]
 
-    #Curva
     move1 = MovementController()
     move1.start()
     move1.use_camera = False
     move1.execute_movement_sequence(movement_sequence)
 
-     # Loop simples, sem rospy.Rate, para monitorar a variável de controle
     while not rospy.is_shutdown():
-        if move1.sequence_complete == 1:  # Verifica se o movimento foi concluído
+        if move1.sequence_complete == 1:
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move1.set_feedback_scheduler(0.0)  # Publica o valor 1 no feedback
+            move1.set_feedback_scheduler(0.0)  
             move1.stop_feedback()
-            move1.stop_controller()  # Parar controlador e timers
+            move1.stop_controller() 
             break  
-    ############  inicio do código #############
+
+#----------------------------------------------------------------------------------------------#
+
     movement_sequence = [
         {'action': 'move_forward', 'duration': 2.3},
         {'action': 'turn', 'direction': 'right', 'duration': 2.2},
     ]
     
-    turn_side = 2  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 2  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+    turn_side = 2  
+    turn_at_intersection = 1  
+    lost_line_turn = 2 
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
-    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
-
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower.start()
-
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
 
-    #Curva
     move = MovementController()
     move.start()
     move.execute_movement_sequence(movement_sequence)
@@ -492,22 +483,23 @@ def seg_31():
 
     rospy.sleep(3.0)
 
-    turn_side = 1  # Definir como virar à esquerda
-    turn_at_intersection = 1  # Virar na 2ª interseção
-    lost_line_turn = 0  # Virar à esquerda se perder a linha
-    surpass_side = 1  # Fazer a ultrapassagem pela esquerda
+#----------------------------------------------------------------------------------------------#
 
-    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side)
+    turn_side = 1 
+    turn_at_intersection = 1 
+    lost_line_turn = 0  
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
 
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
     rospy.loginfo("Iniciando o seguidor de linha...")
     follower2.start()
 
-    #Giro inicial de 90°
     movement_sequence = [
         {'action': 'move_forward', 'duration': 2.0},
         {'action': 'turn', 'direction': 'left', 'duration': 2.4},
     ]
-    #Curva
     move = MovementController()
     move.start()
     move.use_camera = False
@@ -516,15 +508,185 @@ def seg_31():
     while not rospy.is_shutdown():
         if move.sequence_complete == 1:  
             rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
-            move.set_feedback_scheduler(1.0)  # Publica o valor 1 no feedback
+            move.set_feedback_scheduler(1.0)  
             rospy.sleep(0.1)
-            move.stop_controller()  # Parar controlador e timers
+            move.stop_controller()  
             move.stop_feedback()
             break
-        rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
 
     rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
 
+def seg_36():
+    movement_sequence = [
+        #{'action': 'move_back', 'duration': 0.5},
+        {'action': 'turn', 'direction': 'right', 'duration': 2.6},
+    ]
+
+    move1 = MovementController()
+    move1.start()
+    move1.use_camera = False
+    move1.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move1.sequence_complete == 1: 
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move1.set_feedback_scheduler(0.0) 
+            move1.stop_feedback()
+            move1.stop_controller()  
+            break  
+
+#----------------------------------------------------------------------------------------------#
+
+    movement_sequence = [
+        {'action': 'move_forward', 'duration': 2.3},
+        {'action': 'turn', 'direction': 'left', 'duration': 2.2},
+    ]
+    
+    turn_side = 1 
+    turn_at_intersection = 1  
+    lost_line_turn = 1 
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
+
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
+    rospy.loginfo("Iniciando o seguidor de linha...")
+    follower.start()
+    rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
+
+    move = MovementController()
+    move.start()
+    move.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move.sequence_complete == 1:  
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move.stop_controller()  
+            move.stop_feedback()
+            break
+
+    rospy.sleep(3.0)
+
+#----------------------------------------------------------------------------------------------#
+
+    turn_side = 1  
+    turn_at_intersection = 2 
+    lost_line_turn = 0  
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
+
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise) 
+    rospy.loginfo("Iniciando o seguidor de linha...")
+    follower2.start()
+
+    movement_sequence = [
+        {'action': 'move_forward', 'duration': 1.0},
+        {'action': 'turn', 'direction': 'left', 'duration': 2.4},
+        {'action': 'move_forward', 'duration': 2.0},
+    ]
+
+    move = MovementController()
+    move.start()
+    move.use_camera = False
+    move.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move.sequence_complete == 1:  
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move.set_feedback_scheduler(1.0) 
+            rospy.sleep(0.1)
+            move.stop_controller() 
+            move.stop_feedback()
+            break
+
+    rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
+
+
+def seg_46():
+    movement_sequence = [
+        {'action': 'turn', 'direction': 'right', 'duration': 4.4},
+    ]
+
+    move1 = MovementController()
+    move1.start()
+    move1.use_camera = False
+    move1.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move1.sequence_complete == 1: 
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move1.set_feedback_scheduler(0.0) 
+            move1.stop_feedback()
+            move1.stop_controller()  
+            break  
+
+#----------------------------------------------------------------------------------------------#
+
+    movement_sequence = [
+        {'action': 'move_forward', 'duration': 1.9},
+        {'action': 'turn', 'direction': 'right', 'duration': 2.3},
+    ]
+    
+    turn_side = 2  
+    turn_at_intersection = 1 
+    lost_line_turn = 0  
+    surpass_side = 1  
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
+
+    follower = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
+    rospy.loginfo("Iniciando o seguidor de linha...")
+    follower.start()
+    rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a esquerda.")
+
+    move = MovementController()
+    move.start()
+    move.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move.sequence_complete == 1:  
+            move.stop_controller() 
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move.stop_feedback()
+            break
+
+    rospy.sleep(3.0)
+
+#----------------------------------------------------------------------------------------------#
+
+    turn_side = 2  
+    turn_at_intersection = 1  
+    lost_line_turn = 1  
+    surpass_side = 1 
+    time_delay = 1.0
+    zonas_de_analise = [1,1,1]
+
+    follower2 = LineFollower(turn_side, turn_at_intersection, lost_line_turn, surpass_side, time_delay, zonas_de_analise)
+
+    rospy.loginfo("Iniciando o seguidor de linha...")
+    follower2.start()
+
+    movement_sequence = [
+        {'action': 'move_forward', 'duration': 1.0},
+        {'action': 'turn', 'direction': 'left', 'duration': 2.4},
+        {'action': 'move_forward', 'duration': 3.0},
+    ]
+    move = MovementController()
+    move.start()
+    move.use_camera = False
+    move.execute_movement_sequence(movement_sequence)
+
+    while not rospy.is_shutdown():
+        if move.sequence_complete == 1:  
+            rospy.loginfo("Movimento concluído. Publicando feedback e encerrando.")
+            move.set_feedback_scheduler(1.0)  
+            rospy.sleep(0.1)
+            move.stop_controller() 
+            move.stop_feedback()
+            break
+
+    rospy.loginfo("Seguidor de linha finalizado. Executando a curva para a direita...")
 
 
 def goal_callback(msg):
@@ -556,8 +718,15 @@ def goal_callback(msg):
     elif goal_value == 31:
         seg_31()
         rospy.loginfo("Executando o segmento 31 (seg_31).")
+    elif goal_value == 36:
+        seg_36()
+        rospy.loginfo("Executando o segmento 36 (seg_36).")
+    elif goal_value == 46:
+        seg_46()
+        rospy.loginfo("Executando o segmento 46 (seg_46).")
     else:
         rospy.loginfo("Goal desconhecido. Nenhuma ação executada.")
+    
 
 def listener():
     """

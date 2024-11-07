@@ -11,12 +11,13 @@ class ZigZagSearch:
 
         self.aruco_reference_id = None
         self.distance_threshold = 0.15  # 15 cm
+        self.padding_threshold = 0.2  # Porcentagem de margem em relação à largura/altura da imagem
 
         self.pub_move_time = rospy.Publisher('/move_time', String, queue_size=10)
         self.pub_feedback = rospy.Publisher('/search_block/feedback', Int32, queue_size=10)
         self.sub_search = rospy.Subscriber('/search_block', String, self.search_callback)
         self.sub_tag_detections = rospy.Subscriber('/tag_detections', AprilTagDetectionArray, self.tag_detection_callback)
-        self.sub_ultrasound_right = rospy.Subscriber('/ultrasound_sensor_right', Float32, self.ultrasound_callback)  # Alteração para Float32
+        self.sub_ultrasound_right = rospy.Subscriber('/ultrasound_sensor_right', Float32, self.ultrasound_callback)
 
         self.rate = rospy.Rate(50)
         self.movement_active = False
@@ -48,10 +49,10 @@ class ZigZagSearch:
             try:
                 while self.current_distance > self.distance_threshold and self.movement_active:
                     rospy.loginfo("Executando movimento de zigue-zague...")
-
                     rospy.loginfo("Movendo para a direita por 2.0 segundos.")
                     self.pub_move_time.publish("direita,2.0")
                     rospy.sleep(2.3)
+
                     if self.tag_detected_count >= 10:
                         rospy.loginfo("ArUco de referência detectado 10 vezes consecutivas. Parando o movimento.")
                         self.stop_movement()
@@ -60,15 +61,9 @@ class ZigZagSearch:
                     rospy.loginfo("Movendo para trás por 1.1 segundos.")
                     self.pub_move_time.publish("tras,1.1")
                     rospy.sleep(1.4)
-                    if self.tag_detected_count >= 10:
-                        rospy.loginfo("ArUco de referência detectado 10 vezes consecutivas. Parando o movimento.")
-                        self.stop_movement()
-                        return
-                    if self.current_distance <= self.distance_threshold:
-                        rospy.loginfo(f"Distância de {self.current_distance:.2f} metros atingida. Parando o movimento de zigue-zague.")
 
-                        self.pub_move_time.publish("frente,1.1")
-                        rospy.sleep(1.4)
+                    # Verificação adicional para a detecção e parada se necessário
+                    if self.tag_detected_count >= 10 or self.current_distance <= self.distance_threshold:
                         self.stop_movement()
                         self.perform_reverse_zigzag()
                         return
@@ -76,31 +71,37 @@ class ZigZagSearch:
                     rospy.loginfo("Movendo para a direita por 2.0 segundos.")
                     self.pub_move_time.publish("direita,2.0")
                     rospy.sleep(2.3)
-                    if self.tag_detected_count >= 10:
-                        rospy.loginfo("ArUco de referência detectado 10 vezes consecutivas. Parando o movimento.")
-                        self.stop_movement()
-                        return
 
                     rospy.loginfo("Movendo para a frente por 1.1 segundos.")
                     self.pub_move_time.publish("frente,1.1")
                     rospy.sleep(1.4)
-                    if self.tag_detected_count >= 10:
-                        rospy.loginfo("ArUco de referência detectado 10 vezes consecutivas. Parando o movimento.")
-                        self.stop_movement()
-                        return
-
-                    # Verifica a distância para interromper o movimento ao atingir a distância limite
-                    if self.current_distance <= self.distance_threshold:
-                        rospy.loginfo(f"Distância de {self.current_distance:.2f} metros atingida. Parando o movimento de zigue-zague.")
-                        self.stop_movement()
-                        self.perform_reverse_zigzag()
-                        return
 
             except Exception as e:
                 rospy.logerr("Erro durante o movimento: %s", str(e))
                 self.pub_feedback.publish(0)
                 self.movement_active = False
                 return
+
+    def tag_detection_callback(self, data):
+        for detection in data.detections:
+            tag_id = detection.id[0]
+            if tag_id == self.aruco_reference_id:
+                # Obter posição do marcador (centro) na imagem
+                tag_center_x = detection.pose.pose.pose.position.x
+                tag_center_y = detection.pose.pose.pose.position.y
+
+                # Definir margens (padding) da imagem
+                if abs(tag_center_x) < self.padding_threshold and abs(tag_center_y) < self.padding_threshold:
+                    rospy.loginfo(f"ArUco de referência {self.aruco_reference_id} detectado próximo às bordas.")
+                    self.stop_movement()
+                    return
+
+                rospy.loginfo(f"ArUco de referência {self.aruco_reference_id} detectado.")
+                self.tag_detected_count += 1
+                rospy.loginfo(f"Detecções consecutivas: {self.tag_detected_count}/10")
+                if self.tag_detected_count >= 10:
+                    self.stop_movement()
+                break
 
     def perform_reverse_zigzag(self):
         try:
@@ -165,17 +166,6 @@ class ZigZagSearch:
             self.pub_feedback.publish(0)
             self.movement_active = False
 
-    def tag_detection_callback(self, data):
-        for detection in data.detections:
-            tag_id = detection.id[0]
-            if tag_id == self.aruco_reference_id:
-                rospy.loginfo(f"ArUco de referência {self.aruco_reference_id} detectado.")
-                self.tag_detected_count += 1
-                rospy.loginfo(f"Detecções consecutivas: {self.tag_detected_count}/10")
-                if self.tag_detected_count >= 10:
-                    self.stop_movement()
-                break
-
     def stop_movement(self):
         if self.movement_active:
             rospy.loginfo("Parando o movimento.")
@@ -194,3 +184,5 @@ if __name__ == '__main__':
         zigzag.run()
     except rospy.ROSInterruptException:
         pass
+
+
