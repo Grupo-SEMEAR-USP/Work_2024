@@ -1,2 +1,0 @@
-float32 platform_angle
-float32 manipulator_angle

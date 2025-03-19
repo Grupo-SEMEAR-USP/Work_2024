@@ -1,3 +1,0 @@
-<launch>
-  <node name="robot_line_follower_node" pkg="robot_line_follower" type="code.py" /> 
-</launch>

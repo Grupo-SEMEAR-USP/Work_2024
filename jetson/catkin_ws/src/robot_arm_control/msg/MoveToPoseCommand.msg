@@ -1,1 +1,0 @@
-string pose_name
