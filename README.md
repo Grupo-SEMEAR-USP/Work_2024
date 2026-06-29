@@ -6,11 +6,11 @@
   <a href="#installation">Installation</a> • 
 </p>
 
+## <div id="project-overview"></div>Project Overview
+
 <p align="center">
 This repository contains the code developed by the Autonomous Robotics Nucleus (RMA) of the SEMEAR group at the University of São Paulo (USP) - São Carlos, for the CBR@Work 2024 competition. The competition challenges teams to build autonomous robots capable of performing complex industrial tasks, such as transporting parts, precisely manipulating objects, and navigating dynamic industrial environments with obstacles. The goal is to optimize task sequencing based on provided orders, integrating navigation, recognition, and manipulation capabilities to operate in a realistic industrial setting.
 </p>
-
-## <div id="project-overview"></div>Project Overview
 
 ## <div id="installation"></div>Installation
 
