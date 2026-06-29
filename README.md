@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="#project-overview">Project Overview</a> • 
-  <a href="#installation">Installation</a> • 
+  <a href="#installation">Installation</a> 
 </p>
 
 ## <div id="project-overview"></div>Project Overview
