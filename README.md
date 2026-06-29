@@ -4,12 +4,6 @@
 <p align="center">
   <a href="#project-overview">Project Overview</a> • 
   <a href="#installation">Installation</a> • 
-  <a href="#usage">Usage</a> • 
-  <a href="#navigation-and-object-manipulation">Navigation and Object Manipulation</a> • 
-  <a href="#task-sequencing">Task Sequencing</a> •
-  <a href="#results">Results</a> •
-  <a href="#license">License</a> •
-  <a href="#acknowledgements">Acknowledgements</a>
 </p>
 
 <p align="center">
@@ -48,18 +42,6 @@ catkin_make</code></pre>
     <pre><code>source ~/catkin_ws/devel/setup.bash</code></pre>
   </li>
 </ol>
-
-## <div id="usage"></div>Usage
-Soon... 👀
-
-## <div id="navigation-and-object-manipulation"></div>Navigation and Object Manipulation
-Soon... 👀
-
-## <div id="task-sequencing"></div>Task Sequencing
-Soon... 👀
-
-## <div id="Results"></div>Results
-Soon... 👀
 
 ## <div id="license"></div>License
 This project is licensed under the MIT License. See the LICENSE file for details.
